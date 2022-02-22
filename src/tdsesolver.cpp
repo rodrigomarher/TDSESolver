@@ -8,7 +8,6 @@
 #include "debug.h"
 #include "utils.h"
 
-#ifndef MPI
 TDSESolver::TDSESolver(){
 }
 
@@ -134,9 +133,23 @@ void TDSESolver::setup_diagnostics(){
     _diag->set_tempmask();
     _diag->create_probes();
 }
-
+#ifdef MPI
 void TDSESolver::setup_mpi(){
+    MPI_Init(NULL,NULL);
+    int dims[2]={0,0};
+    int period[2] = {0,0};
+    int reorder = 1;
+    int wsize;
+    MPI_Comm_size(MPI_COMM_WORLD,&wsize);
+    MPI_Dims_create(wsize,2,dims);
+    MPI_Cart_create(MPI_COMM_WORLD, 2, dims, period, reorder, &_comm_cart);
+    int coords[2];
+    int rank;
+    MPI_Comm_rank(_comm_cart,&rank);
+    MPI_Cart_coords(_comm_cart,rank,2,coords);
+    std::cout<<"Node number: "<<rank<<" Coords: "<<coords[0]<<" "<<coords[1]<<std::endl;
 }
+#endif
 
 void TDSESolver::ipropagate(){
     (this->*(this->_ipropagate))();
@@ -164,4 +177,3 @@ TDSESolver::~TDSESolver(){
     delete _ham;
     delete _diag;
 }
-#endif

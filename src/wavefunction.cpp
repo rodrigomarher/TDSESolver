@@ -7,7 +7,6 @@
 #include "utils.h"
 #include "wavefunction.h"
 
-#ifndef MPI
 WF::WF(){
         
 }
@@ -318,4 +317,3 @@ WF::~WF(){
     delete[] _j_row;
     delete[] _k_row;
 }
-#endif MPI

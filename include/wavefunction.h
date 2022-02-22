@@ -8,6 +8,10 @@
 #include <string>
 #include "parameters.h"
 
+#ifdef MPI
+#include <mpi.h>
+#endif MPI
+
 class WF{
     private:
         cdouble ***_wf;
@@ -34,6 +38,10 @@ class WF{
         WF(Parameters *param);
         void set_geometry(double *i, double *j, double *k, const double di, const double dj, const double dk);
         void set_diagnostics();
+		#ifdef MPI
+		void set_mpi(MPI_Comm comm);
+		#endif
+		void set_mpi();
         void gaussian(double i0, double j0, double k0, double sigma);
         void exponential(double i0, double j0, double k0, double sigma);
         cdouble*** get();
