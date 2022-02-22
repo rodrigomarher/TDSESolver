@@ -8,7 +8,7 @@
 #include "debug.h"
 #include "utils.h"
 
-#ifndef MPI
+#ifdef MPI
 TDSESolver::TDSESolver(){
 }
 
@@ -20,10 +20,11 @@ TDSESolver::TDSESolver(Parameters *param){
     omp_set_num_threads(_param->n_threads);
     setup_geometry();
     setup_fields();
-    setup_ham();
-    setup_wf();
-    setup_masks();
-    setup_diagnostics();
+    //setup_ham();
+    //setup_wf();
+    //setup_masks();
+    //setup_diagnostics();
+    setup_mpi();
     }
 
 void TDSESolver::setup_time(){
@@ -136,6 +137,19 @@ void TDSESolver::setup_diagnostics(){
 }
 
 void TDSESolver::setup_mpi(){
+    MPI_Init(NULL,NULL);
+    int dims[2]={0,0};
+    int period[2] = {0,0};
+    int reorder = 1;
+    int wsize;
+    MPI_Comm_size(MPI_COMM_WORLD,&wsize);
+    MPI_Dims_create(wsize,2,dims);
+    MPI_Cart_create(MPI_COMM_WORLD, 2, dims, period, reorder, &_comm_cart);
+    int coords[2];
+    int rank;
+    MPI_Comm_rank(_comm_cart,&rank);
+    MPI_Cart_coords(_comm_cart,rank,2,coords);
+    std::cout<<"Node number: "<<rank<<" Coords: "<<coords[0]<<" "<<coords[1]<<std::endl;
 }
 
 void TDSESolver::ipropagate(){
@@ -147,6 +161,7 @@ void TDSESolver::propagate(){
 }
 
 TDSESolver::~TDSESolver(){
+    MPI_Finalize();
     delete[] _t;
     delete[] _i;
     delete[] _j;

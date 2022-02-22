@@ -15,4 +15,5 @@ test*
 !tdsesolver_XZ.cpp
 !tdsesolver_RZ.cpp
 !tdsesolver_XYZ.cpp
+!tdsesolver.MPI.cpp
 !test.cpp

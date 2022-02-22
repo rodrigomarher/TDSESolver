@@ -11,8 +11,15 @@
 #include "hamiltonian.h"
 #include "diagnostics.h"
 
+#ifdef MPI
+#include <mpi.h>
+#endif
+
     class TDSESolver{
         private:
+            #ifdef MPI
+            MPI_Comm _comm_cart;
+            #endif
             Parameters *_param;
 
             Field *Afield_i;
@@ -68,6 +75,7 @@
             void setup_diagnostics();
             void setup_wf();
             void setup_ham();
+            void setup_mpi();
             void propagate();
             void ipropagate();
             

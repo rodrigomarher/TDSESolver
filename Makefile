@@ -3,16 +3,18 @@ use_MPI := $(USE_MPI)
 
 ifeq ($(detected_OS),Linux)
 	CC = g++
+	CFLAGS = -lm -O3 -fopenmp -ffast-math -g -Wall
 endif
 ifeq ($(detected_OS), Darwin)
 	CC = g++-11
+	CFLAGS = -lm -O3 -fopenmp -ffast-math -g -Wall
 endif
 
 ifeq ($(use_MPI), Yes)
 	CC =  mpic++
+	CFLAGS = -lm -O3 -fopenmp -ffast-math -g -Wall -DMPI
 endif
 
-CFLAGS = -lm -O3 -fopenmp -ffast-math -g -Wall
 
 SRC = ./src/
 #SRC = ./src/fields.cpp ./src/hamiltonian.cpp ./src/parameters.cpp ./src/tdsesolver.cpp ./src/utils.cpp ./src/wavefunction.cpp

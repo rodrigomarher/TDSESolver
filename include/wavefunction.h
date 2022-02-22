@@ -20,6 +20,7 @@ class WF{
         cdouble *_dV_k;
         Parameters *_param;
         int _ni, _nj ,_nk;
+        int _nproc_i, _nproc_j;
         double *_i, *_j, *_k, _di, _dj, _dk;
         void (WF::*_apply_mask)(cdouble*,cdouble*,cdouble*);
 

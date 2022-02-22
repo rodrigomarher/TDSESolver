@@ -2,8 +2,8 @@
 #include <cmath>
 #include <complex>
 #include <mpi.h>
-
-double gauss(double i, double j, double k){
+#define cdouble std::complex<double>
+cdouble gauss(double i, double j, double k){
     return exp(-i*i-j*j-k*k);
 }
 
@@ -14,7 +14,8 @@ int main(){
     int size_process;
     MPI_Comm_size(MPI_COMM_WORLD,&size_process);
     
-    double *i, *j, *k, ***wf;
+    double *i, *j, *k;
+    cdouble ***wf;
     int nmax = 8;
     int ni = 1000;
     int nj = 500;
@@ -25,16 +26,16 @@ int main(){
     double di = 2.0*imax/ni;
     double dk = 2.0*kmax/nk;
     double dj = 2.0*jmax/nj;
-    double norm;
+    cdouble norm;
     i = new double[ni];
     j = new double[nj];
     k = new double[nk];
 
-    wf = new double**[ni/size_process];
+    wf = new cdouble**[ni/size_process];
     for(int ii=0; ii<ni/size_process; ii++){
-        wf[ii] = new double*[nj];
+        wf[ii] = new cdouble*[nj];
         for(int jj=0;jj<nj;jj++){
-            wf[ii][jj] = new double[nk];
+            wf[ii][jj] = new cdouble[nk];
         }
     }
 
@@ -58,7 +59,7 @@ int main(){
         }
     }
 
-    double integral = 0;
+    cdouble integral = 0;
     for(int ii=0; ii<ni/size_process;ii++){
         for(int jj=0;jj<nj;jj++){
             for(int kk=0;kk<nk;kk++){
@@ -68,13 +69,13 @@ int main(){
     }
     MPI_Send(&integral,1,MPI_DOUBLE,0,0,MPI_COMM_WORLD);
     if(num_process ==0){
-        double *integral_arr;
-        integral_arr = new double[size_process];
+        cdouble *integral_arr;
+        integral_arr = new cdouble[size_process];
         integral_arr[0] = integral;
         for(int p=1;p<size_process;p++){
-           MPI_Recv(&integral_arr[p],1,MPI_DOUBLE,p,0,MPI_COMM_WORLD,&status); 
+           MPI_Recv(&integral_arr[p],1,MPI_DOUBLE_COMPLEX,p,0,MPI_COMM_WORLD,&status); 
         }
-        double sum = 0;
+        cdouble sum = 0;
         for(int p=0;p<size_process;p++){
             sum += integral_arr[p];
         }
@@ -84,11 +85,11 @@ int main(){
     }
     if(num_process==0){ 
         for(int p=1;p<size_process;p++){
-            MPI_Send(&norm,1,MPI_DOUBLE,p,1,MPI_COMM_WORLD);
+            MPI_Send(&norm,1,MPI_DOUBLE_COMPLEX,p,1,MPI_COMM_WORLD);
         }
     }
     if(num_process!=0)
-        MPI_Recv(&norm,1,MPI_DOUBLE,0,1,MPI_COMM_WORLD,&status);
+        MPI_Recv(&norm,1,MPI_DOUBLE_COMPLEX,0,1,MPI_COMM_WORLD,&status);
 
     std::cout<<"n: "<<num_process<<" norm: "<<norm<<std::endl;
     for(int ii=0; ii<ni/size_process;ii++){
@@ -106,15 +107,15 @@ int main(){
             }
         }
     }
-    MPI_Send(&integral,1,MPI_DOUBLE,0,0,MPI_COMM_WORLD);
+    MPI_Send(&integral,1,MPI_DOUBLE_COMPLEX,0,0,MPI_COMM_WORLD);
     if(num_process ==0){
-        double *integral_arr;
-        integral_arr = new double[size_process];
+        cdouble *integral_arr;
+        integral_arr = new cdouble[size_process];
         integral_arr[0] = integral;
         for(int p=1;p<size_process;p++){
-           MPI_Recv(&integral_arr[p],1,MPI_DOUBLE,p,0,MPI_COMM_WORLD,&status); 
+           MPI_Recv(&integral_arr[p],1,MPI_DOUBLE_COMPLEX,p,0,MPI_COMM_WORLD,&status); 
         }
-        double sum = 0;
+        cdouble sum = 0;
         for(int p=0;p<size_process;p++){
             sum += integral_arr[p];
         }

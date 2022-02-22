@@ -7,7 +7,8 @@
 #include "utils.h"
 #include "wavefunction.h"
 
-#ifndef MPI
+#ifdef MPI
+#include <mpi.h>
 WF::WF(){
         
 }
@@ -20,12 +21,12 @@ void WF::set_geometry( double *i, double *j, double *k, const double di, const d
     _ni = _param->ni;
     _nj = _param->nj;
     _nk = _param->nk;
-    
-    _wf = alloc3d<cdouble>(_ni, _nj, _nk);
+    _nproc_j = 2; _nproc_i = 2;
+    _wf = alloc3d<cdouble>(_ni/_nproc_i, _nj/_nproc_j, _nk);
     if(_param->geometry == XYZ)
-        _wf_buf = alloc4d<cdouble>(_ni, _nj, _nk, 1);
+        _wf_buf = alloc4d<cdouble>(_ni/_nproc_i, _nj/_nproc_j, _nk, 1);
     else
-        _wf_buf = alloc4d<cdouble>(_ni, _nj, _nk, _param->nt_diag);
+        _wf_buf = alloc4d<cdouble>(_ni/_nproc_i, _nj/_nproc_j, _nk, _param->nt_diag);
     _i_row = new cdouble[_ni];
     _j_row = new cdouble[_nj];
     _k_row = new cdouble[_nk];

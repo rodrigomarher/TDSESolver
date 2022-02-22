@@ -12,10 +12,13 @@ int main(){
     param.geometry = RZ;
     param.init_wf = GAUS;
     param.use_potential = 0;
-    param.ni = 600;
-    param.nk = 1000;
+    param.ni = 100;
+    param.nk = 100;
+    param.nj = 100;
     param.imin =  -120;
     param.imax =  120;
+    param.jmax = 120;
+    param.jmin = -120;
     param.kmin = -120;
     param.kmax =  120;
 				
@@ -31,18 +34,24 @@ int main(){
 			    
     param.env = SIN2;
     param.w0Ei = 0.057;
+    param.w0Ej = 0.057;
     param.w0Ek = 0.057;
     param.w0Bi = 0.057;
+    param.w0Bj = 0.057;
     param.w0Bk = 0.057;
 								
     param.E0i = 0.000;
+    param.E0j = 0.000;
     param.E0k = 0.067;
     param.B0i = 0.000;
-    param.B0k = 0.12;
+    param.B0j = 0.000;
+    param.B0k = 0.120;
 													
     param.phiEi = 0.0*M_PI;
+    param.phiEj = 0.0;
     param.phiEk = 0.0;
     param.phiBi = 0.0;
+    param.phiBj = 0.0;
     param.phiBk = 0.00;
 
     param.n_probes = 2;
@@ -51,7 +60,7 @@ int main(){
     param.print();
     TDSESolver *tdse;
     tdse = new TDSESolver(&param);
-    tdse->ipropagate();
-    tdse->propagate();
+    //tdse->ipropagate();
+    //tdse->propagate();
     delete tdse;
 }
