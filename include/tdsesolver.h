@@ -10,6 +10,7 @@
 #include "wavefunction.h"
 #include "hamiltonian.h"
 #include "diagnostics.h"
+#include "mpi_grid.h"
 
 #ifdef MPI
 #include <mpi.h>
@@ -18,7 +19,7 @@
     class TDSESolver{
         private:
             #ifdef MPI
-            MPI_Comm _comm_cart;
+            mpi_grid _mpi_grid;
             #endif
             Parameters *_param;
 

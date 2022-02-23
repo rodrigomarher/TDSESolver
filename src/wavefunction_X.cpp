@@ -16,4 +16,10 @@ void WF::apply_mask_X(cdouble *imask, cdouble *jmask, cdouble *kmask){
     }
 }
 
-
+cdouble WF::_norm2_X(){
+	cdouble integral = 0.0;
+	for(int i=0; i<_ni;i++){
+		integral += _wf[i][0][0]*conj(_wf[i][0][0])*_di;
+	}
+	return integral;
+}

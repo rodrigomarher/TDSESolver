@@ -9,11 +9,14 @@
 #include "parameters.h"
 
 #ifdef MPI
-#include <mpi.h>
+#include "mpi_grid.h"
 #endif MPI
 
 class WF{
     private:
+		#ifdef MPI
+	   	mpi_grid *_mpi_grid;
+		#endif
         cdouble ***_wf;
         cdouble ****_wf_buf;
         cdouble *_diag_buf;
@@ -24,7 +27,7 @@ class WF{
         cdouble *_dV_k;
         Parameters *_param;
         int _ni, _nj ,_nk;
-        int _nproc_i, _nproc_j;
+        int _nproc_i=1, _nproc_j=1;
         double *_i, *_j, *_k, _di, _dj, _dk;
         void (WF::*_apply_mask)(cdouble*,cdouble*,cdouble*);
 
@@ -33,15 +36,19 @@ class WF{
         void _geom_RZ();
         void _geom_XYZ();
 
+		cdouble _norm2_X();
+		cdouble _norm2_XZ();
+		cdouble _norm2_RZ();
+		cdouble _norm2_XYZ();
+
     public:
         WF();
         WF(Parameters *param);
         void set_geometry(double *i, double *j, double *k, const double di, const double dj, const double dk);
         void set_diagnostics();
 		#ifdef MPI
-		void set_mpi(MPI_Comm comm);
+		void set_mpi(mpi_grid *grid);
 		#endif
-		void set_mpi();
         void gaussian(double i0, double j0, double k0, double sigma);
         void exponential(double i0, double j0, double k0, double sigma);
         cdouble*** get();

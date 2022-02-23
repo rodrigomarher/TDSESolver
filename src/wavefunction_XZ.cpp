@@ -24,4 +24,12 @@ void WF::apply_mask_buf_XZ(cdouble *imask,cdouble *jmask, cdouble *kmask,const i
     }
 }
 
-
+cdouble WF::_norm2_XZ(){
+	cdouble integral = 0.0;
+	for(int i=0; i<_ni;i++){
+		for(int k=0;k<_nk;k++){
+			integral += _wf[i][0][k]*conj(_wf[i][0][k])*_di*_dk;
+		}
+	}
+	return integral;
+}

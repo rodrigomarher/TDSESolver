@@ -17,12 +17,13 @@ TDSESolver::TDSESolver(Parameters *param){
     setup_time();
 
     omp_set_num_threads(_param->n_threads);
+    setup_mpi();
     setup_geometry();
     setup_fields();
-    setup_ham();
+    //setup_ham();
     setup_wf();
-    setup_masks();
-    setup_diagnostics();
+    //setup_masks();
+    //setup_diagnostics();
     }
 
 void TDSESolver::setup_time(){
@@ -74,6 +75,7 @@ void TDSESolver::setup_fields(){
 
 void TDSESolver::setup_wf(){
     _wf = new WF(_param);
+    _wf->set_mpi(&_mpi_grid);
     _wf->set_geometry(_i,_j,_k,_di,_dj,_dk);
     switch(_param->init_wf){
     	case GAUS:
@@ -136,18 +138,22 @@ void TDSESolver::setup_diagnostics(){
 #ifdef MPI
 void TDSESolver::setup_mpi(){
     MPI_Init(NULL,NULL);
-    int dims[2]={0,0};
-    int period[2] = {0,0};
-    int reorder = 1;
-    int wsize;
-    MPI_Comm_size(MPI_COMM_WORLD,&wsize);
-    MPI_Dims_create(wsize,2,dims);
-    MPI_Cart_create(MPI_COMM_WORLD, 2, dims, period, reorder, &_comm_cart);
-    int coords[2];
-    int rank;
-    MPI_Comm_rank(_comm_cart,&rank);
-    MPI_Cart_coords(_comm_cart,rank,2,coords);
-    std::cout<<"Node number: "<<rank<<" Coords: "<<coords[0]<<" "<<coords[1]<<std::endl;
+    _mpi_grid.dims[0]=0;
+    _mpi_grid.dims[1]=0;
+    _mpi_grid.period[0]=0;
+    _mpi_grid.period[1]=0;
+    _mpi_grid.reorder = 1;
+    MPI_Comm_size(MPI_COMM_WORLD,
+		    &_mpi_grid.size);
+    MPI_Dims_create(_mpi_grid.size,2,_mpi_grid.dims);
+    MPI_Cart_create(MPI_COMM_WORLD, 2,
+		    _mpi_grid.dims,
+		    _mpi_grid.period, 
+		    _mpi_grid.reorder,
+		    &_mpi_grid.comm);
+    MPI_Comm_rank(_mpi_grid.comm,&_mpi_grid.rank);
+    MPI_Cart_coords(_mpi_grid.comm,_mpi_grid.rank,2,_mpi_grid.coords);
+    //std::cout<<"Node number: "<<_mpi_grid.rank<<" Coords: "<<_mpi_grid.coords[0]<<" "<<_mpi_grid.coords[1]<<std::endl;
 }
 #endif
 
@@ -160,6 +166,7 @@ void TDSESolver::propagate(){
 }
 
 TDSESolver::~TDSESolver(){
+    MPI_Finalize();
     delete[] _t;
     delete[] _i;
     delete[] _j;
