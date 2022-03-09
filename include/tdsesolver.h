@@ -19,7 +19,7 @@
     class TDSESolver{
         private:
             #ifdef MPI
-            mpi_grid _mpi_grid;
+            mpi_grid *_mpi_grid;
             #endif
             Parameters *_param;
 

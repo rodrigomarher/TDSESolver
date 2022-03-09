@@ -38,6 +38,20 @@ Hamiltonian::Hamiltonian(Parameters *param){
             _potential = &potential;
 }
 
+#ifdef MPI
+void Hamiltonian::set_mpi(mpi_grid *grid){
+	_mpi_grid = grid;
+	_nproc_i = _mpi_grid->dims[0];
+	_nproc_j = _mpi_grid->dims[1];
+	if(_mpi_grid->rank==0){
+		std::cout<<"Grid: ("<<_nproc_i<<","<<_nproc_j<<")"<<std::endl;
+	}
+	MPI_Barrier(_mpi_grid->comm);
+	std::cout<<"Node number: "<<_mpi_grid->rank<<" Coords: "<<_mpi_grid->coords[0]<<" "<<_mpi_grid->coords[1]<<std::endl;
+	MPI_Barrier(_mpi_grid->comm);
+}
+#endif
+
 void Hamiltonian::set_geometry(double *i, double *j, double *k, double *t, const double di, const double dj, const double dk, const double dt){
     _i = i; _j = j; _k = k; _t = t; _di = di; _dj = dj ; _dk = dk; _dt = dt;
 }

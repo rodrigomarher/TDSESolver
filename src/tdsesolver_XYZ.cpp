@@ -102,7 +102,12 @@ void TDSESolver::_masks_XYZ(){
 
 void TDSESolver::_ipropagate_XYZ(){
     cdouble ener = 0.0;
-    cdouble norm;
+	cdouble norm;
+	ener = (_ham->*(_ham->ener))(_wf->get());
+	norm = _wf->norm();
+	if(_mpi_grid->rank==0)
+		std::cout<<"Norm: "<< norm<<" Ener: "<<ener<<"\n";
+    /*cdouble norm;
     cdouble **psi_i_row, **psi_j_row, **psi_k_row;
     const int ni = _param->ni;
     const int nj = _param->nj;
@@ -156,7 +161,8 @@ void TDSESolver::_ipropagate_XYZ(){
     std::cout<<"Ener: "<<ener<<"\n";
     free2d(&psi_i_row,_param->n_threads,ni);
     free2d(&psi_j_row,_param->n_threads,nj);
-    free2d(&psi_k_row,_param->n_threads,nk);
+    free2d(&psi_k_row,_param->n_threads,nk);*/
+
 }
 
 void TDSESolver::_propagate_XYZ(){

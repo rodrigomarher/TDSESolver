@@ -20,7 +20,7 @@ TDSESolver::TDSESolver(Parameters *param){
     setup_mpi();
     setup_geometry();
     setup_fields();
-    //setup_ham();
+    setup_ham();
     setup_wf();
     //setup_masks();
     //setup_diagnostics();
@@ -75,7 +75,7 @@ void TDSESolver::setup_fields(){
 
 void TDSESolver::setup_wf(){
     _wf = new WF(_param);
-    _wf->set_mpi(&_mpi_grid);
+    _wf->set_mpi(_mpi_grid);
     _wf->set_geometry(_i,_j,_k,_di,_dj,_dk);
     switch(_param->init_wf){
     	case GAUS:
@@ -87,16 +87,21 @@ void TDSESolver::setup_wf(){
     } 
     cdouble norm = _wf->norm();
     double tstart, tend;
-    std::cout<<"norm before: "<<norm<<std::endl;
+    if(_mpi_grid->rank == 0)
+	std::cout<<"norm before: "<<norm<<std::endl;
     (*_wf) /= norm;
-    tstart = omp_get_wtime();
+    if(_mpi_grid->rank == 0)
+	tstart = omp_get_wtime();
     norm = _wf->norm();
-    tend = omp_get_wtime();
-    std::cout<<"norm after: "<<norm<<" Time to calc norm: "<<tend-tstart<<std::endl;
+    if(_mpi_grid->rank == 0){
+        tend = omp_get_wtime();
+        std::cout<<"norm after: "<<norm<<" Time to calc norm: "<<tend-tstart<<std::endl;
+     }
 }
 
 void TDSESolver::setup_ham(){
     _ham = new Hamiltonian(_param);
+    _ham->set_mpi(_mpi_grid);
     _ham->set_geometry(_i,_j,_k,_t,_di,_dj,_dk,_dt);
     _ham->set_fields(Afield_i, Afield_j, Afield_k, Bfield_i, Bfield_j ,Bfield_k);
 }
@@ -138,21 +143,22 @@ void TDSESolver::setup_diagnostics(){
 #ifdef MPI
 void TDSESolver::setup_mpi(){
     MPI_Init(NULL,NULL);
-    _mpi_grid.dims[0]=0;
-    _mpi_grid.dims[1]=0;
-    _mpi_grid.period[0]=0;
-    _mpi_grid.period[1]=0;
-    _mpi_grid.reorder = 1;
+    _mpi_grid = new mpi_grid;
+    _mpi_grid->dims[0]=0;
+    _mpi_grid->dims[1]=0;
+    _mpi_grid->period[0]=0;
+    _mpi_grid->period[1]=0;
+    _mpi_grid->reorder = 1;
     MPI_Comm_size(MPI_COMM_WORLD,
-		    &_mpi_grid.size);
-    MPI_Dims_create(_mpi_grid.size,2,_mpi_grid.dims);
+		    &_mpi_grid->size);
+    MPI_Dims_create(_mpi_grid->size,2,_mpi_grid->dims);
     MPI_Cart_create(MPI_COMM_WORLD, 2,
-		    _mpi_grid.dims,
-		    _mpi_grid.period, 
-		    _mpi_grid.reorder,
-		    &_mpi_grid.comm);
-    MPI_Comm_rank(_mpi_grid.comm,&_mpi_grid.rank);
-    MPI_Cart_coords(_mpi_grid.comm,_mpi_grid.rank,2,_mpi_grid.coords);
+		    _mpi_grid->dims,
+		    _mpi_grid->period, 
+		    _mpi_grid->reorder,
+		    &_mpi_grid->comm);
+    MPI_Comm_rank(_mpi_grid->comm,&_mpi_grid->rank);
+    MPI_Cart_coords(_mpi_grid->comm,_mpi_grid->rank,2,_mpi_grid->coords);
     //std::cout<<"Node number: "<<_mpi_grid.rank<<" Coords: "<<_mpi_grid.coords[0]<<" "<<_mpi_grid.coords[1]<<std::endl;
 }
 #endif
@@ -166,7 +172,7 @@ void TDSESolver::propagate(){
 }
 
 TDSESolver::~TDSESolver(){
-    MPI_Finalize();
+    std::cout<<"Deleting node: "<<_mpi_grid->rank<<std::endl;
     delete[] _t;
     delete[] _i;
     delete[] _j;
@@ -183,4 +189,5 @@ TDSESolver::~TDSESolver(){
     delete _wf;
     delete _ham;
     delete _diag;
+    MPI_Finalize();
 }

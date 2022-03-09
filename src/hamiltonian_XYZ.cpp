@@ -163,12 +163,14 @@ cdouble Hamiltonian::ener_XYZ(cdouble ***psi){
     cdouble a = 1.0/(_dk*_dk);
     cdouble b = 1.0/(2.0*_dk*_dk);
     #pragma omp parallel for schedule(dynamic) collapse(1)  reduction(+: integral_z)
-    for(int i=0;i<_ni;i++){
-        for(int j=0;j<_nj;j++){
+    for(int i=0;i<_ni/_nproc_i;i++){
+        for(int j=0;j<_nj/_nproc_j;j++){
             int id = omp_get_thread_num();
+			int idx_i = _mpi_grid->coords[0]*_ni/_nproc_i + i;
+			int idx_j = _mpi_grid->coords[1]*_nj/_nproc_j + j;
             for(int k=0;k<_nk;k++){
                 Hz_du[id*_nk + k] = -b;
-                Hz_d[id*_nk + k]  =  a + 1.0/3.0*_potential_fn(_i[i],_j[j],_k[k],0);
+                Hz_d[id*_nk + k]  =  a + 1.0/3.0*_potential_fn(_i[idx_i],_j[idx_j],_k[k],0);
                 Hz_dl[id*_nk + k] = -b;
                 k_row[id*_nk + k] = psi[i][j][k];
             }
@@ -178,6 +180,29 @@ cdouble Hamiltonian::ener_XYZ(cdouble ***psi){
             }
         }
     }
+	std::cout<<"integral_z: "<<integral_z<<std::endl;
+
+	#ifdef MPI
+	if(_mpi_grid->rank != 0){
+		MPI_Send(&integral_z,1,MPI_DOUBLE,0,42,_mpi_grid->comm);
+	}
+	if(_mpi_grid->rank == 0){
+		double sum_array[_mpi_grid->size];
+		sum_array[0] = integral_z;
+		for(int i=1;i<_mpi_grid->size;i++){
+			MPI_Recv(&sum_array[i],1,MPI_DOUBLE,i,42,_mpi_grid->comm, MPI_STATUS_IGNORE);
+		}
+		
+		for(int i=1;i<_mpi_grid->size;i++){
+			integral_z += sum_array[i];
+		}
+		for(int i=1;i<_mpi_grid->size;i++){
+			MPI_Send(&integral_z,1,MPI_DOUBLE,i,43,_mpi_grid->comm);
+		}
+	}
+	if(_mpi_grid->rank != 0)
+		MPI_Recv(&integral_z, 1, MPI_DOUBLE,0,43,_mpi_grid->comm, MPI_STATUS_IGNORE);
+	#endif
     }
     delete[] temp_z;
     delete[] k_row;

@@ -7,9 +7,13 @@
 #include <string>
 #include "parameters.h"
 #include "fields.h"
+#include "mpi_grid.h"
 
 class Hamiltonian{
     private:
+		#ifdef MPI
+		mpi_grid *_mpi_grid;
+		#endif
         Parameters *_param;
 
         Field *Afield_i;
@@ -22,7 +26,7 @@ class Hamiltonian{
         double *_i, *_j, *_k, *_t;
         double _di, _dj, _dk, _dt;
         int _ni, _nj, _nk, _nt;
-             
+        int _nproc_i=1, _nproc_j=1;
         cdouble *_Mk_du, *_Mk_d, *_Mk_dl;
         cdouble *_Mpk_du, *_Mpk_d, *_Mpk_dl;
         cdouble *_Mj_du, *_Mj_d, *_Mj_dl;
@@ -50,6 +54,9 @@ class Hamiltonian{
         friend cdouble potential_RZ(double i, double j, double k, double ti, Hamiltonian *ham);
         Hamiltonian();
         Hamiltonian(Parameters *param);
+		#ifdef MPI
+		void set_mpi(mpi_grid *grid);
+		#endif
         void set_geometry(double *i, double *j, double *k, double *t, const double di, const double dj, const double dk, const double dt);
         void set_fields(Field* field1, Field* field2, Field* field3, Field* field4, Field* field5, Field* field6);
         cdouble dpotential_i(double i, double j, double k);

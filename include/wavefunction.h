@@ -10,7 +10,7 @@
 
 #ifdef MPI
 #include "mpi_grid.h"
-#endif MPI
+#endif 
 
 class WF{
     private:
@@ -65,6 +65,10 @@ class WF{
         void get_i_row(cdouble* i_row, int j, int k);
         void get_j_row(cdouble* j_row, int i, int k);
         void get_k_row(cdouble* k_row, int i, int j);
+		
+		#ifdef MPI
+		void get_i_row_MPI(cdouble* i_row, int j, int k);
+		#endif
 
         void set_to_buf(const int idx);
         void set_i_row_buf(cdouble* i_row, const int j, const int k, const int idx);
@@ -96,7 +100,4 @@ class WF{
         void operator/= (cdouble val);        
 	~WF();
 };
-
-
-
 #endif

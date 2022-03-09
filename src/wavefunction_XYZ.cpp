@@ -49,27 +49,26 @@ cdouble WF::_norm2_XYZ(){
 	#endif
 
 	#ifdef MPI
-	if(_mpi_grid->rank != 0)
+	if(_mpi_grid->rank != 0){
 		MPI_Send(&sum,1,MPI_DOUBLE,0,42,_mpi_grid->comm);
+	}
 
 	if(_mpi_grid->rank == 0){
-		MPI_Request request_arr[_mpi_grid->size];
-		MPI_Status  status_arr[_mpi_grid->size];
 		double sum_array[_mpi_grid->size];
 		sum_array[0] = sum;
 		for(int i=1;i<_mpi_grid->size;i++){
-			MPI_Irecv(&sum_array[i],1,MPI_DOUBLE,i,42,_mpi_grid->comm,&request_arr[i]);
+			MPI_Recv(&sum_array[i],1,MPI_DOUBLE,i,42,_mpi_grid->comm,MPI_STATUS_IGNORE);
 		}
-		MPI_Waitall(_mpi_grid->size-1,request_arr,status_arr);
+		//MPI_Waitall(_mpi_grid->size-1,request_arr,status_arr);
 		for(int i=0;i<_mpi_grid->size;i++){
 			integral += sum_array[i];
 		}
 		
 		for(int i= 1; i<_mpi_grid->size;i++)
-			MPI_Isend(&integral, 1, MPI_DOUBLE_COMPLEX,i,43,_mpi_grid->comm,&request_arr[i]);
-		MPI_Waitall(_mpi_grid->size-1,request_arr,status_arr);
+			MPI_Send(&integral, 1, MPI_DOUBLE_COMPLEX,i,43,_mpi_grid->comm);
+		//MPI_Waitall(_mpi_grid->size,request_arr,status_arr);
 	}
-	if(_mpi_grid->rank != 0)
+	if(_mpi_grid->rank!= 0)
 		MPI_Recv(&integral,1,MPI_DOUBLE_COMPLEX,0,43,_mpi_grid->comm,MPI_STATUS_IGNORE);
 	return integral;
 	#endif

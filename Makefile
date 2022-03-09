@@ -17,7 +17,7 @@ ifeq ($(use_MPI), Yes)
 	endif
 	ifeq ($(detected_OS),Darwin)
 		CC = /Users/rodrigomh/Documents/Software/openmpi-4.1.2/bin/mpic++
-		CFLAGS = -lm -O3 -fopenmp -ffast-math -g -Wall -DMPI
+		CFLAGS = -lm -O0 -fopenmp  -g -Wall -DMPI
 	endif
 endif
 

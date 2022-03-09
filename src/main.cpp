@@ -7,20 +7,20 @@
 
 int main(){
     Parameters param;
-    param.n_threads = 6;
+    param.n_threads = 1;
 
-    param.geometry = RZ;
-    param.init_wf = GAUS;
+    param.geometry = XYZ;
+    param.init_wf = EXPO;
     param.use_potential = 0;
     param.ni = 100;
     param.nk = 100;
     param.nj = 100;
-    param.imin =  -120;
-    param.imax =  120;
-    param.jmax = 120;
-    param.jmin = -120;
-    param.kmin = -120;
-    param.kmax =  120;
+    param.imin =  -20;
+    param.imax =  20;
+    param.jmax = 20;
+    param.jmin = -20;
+    param.kmin = -20;
+    param.kmax =  20;
 				
     param.w0 = 0.057;
     param.period = 2.0*M_PI/param.w0;
@@ -60,7 +60,7 @@ int main(){
     param.print();
     TDSESolver *tdse;
     tdse = new TDSESolver(&param);
-    //tdse->ipropagate();
+    tdse->ipropagate();
     //tdse->propagate();
     delete tdse;
 }
