@@ -67,6 +67,7 @@ void TDSESolver::setup_fields(){
         case RZ:
             _fields_RZ();
             break;
+
         case XYZ:
             _fields_XYZ();
     }
