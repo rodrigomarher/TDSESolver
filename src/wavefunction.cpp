@@ -85,6 +85,7 @@ void WF::exponential(double i0, double j0, double k0, double sigma){
             }
         }
     }
+    std::cout<<_i[300]<<" "<<_j[300]<<" "<<_k[300]<<std::endl;
 }
 
 cdouble WF::norm(){
@@ -110,16 +111,15 @@ cdouble WF::norm(){
             }
             break;
         case XYZ:
-            double sum = 0.0;
-            #pragma omp parallel for reduction(+:sum)
+            //double sum = 0.0;
             for(int i=0;i<_ni;i++){
                 for(int j=0;j<_nj;j++){
                     for(int k=0;k<_nk;k++){
-                        sum += (_wf[i][j][k]*conj(_wf[i][j][k])).real()*_di*_dk*_dj;
+                        integral += (_wf[i][j][k]*conj(_wf[i][j][k]))*_di*_dk*_dj;
                     }
                 }
             }
-            integral = sum;
+            //integral = sum;
             break;
     }
     return sqrt(integral);

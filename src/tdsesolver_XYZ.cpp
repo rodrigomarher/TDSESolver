@@ -203,6 +203,9 @@ void TDSESolver::_propagate_XYZ(){
         _diag->run_diagnostics(n);
         tend = omp_get_wtime();
         std::cout<<"n: "<<n<<"Time step: "<<tend-tstart<<std::endl;
+	if(n%_param->nt_diag==0){
+	    std::cout<<"Norm: "<<_wf->norm()<<std::endl;
+	}
     }
     _diag->write_diagnostics();
     free2d(&psi_i_row,_param->n_threads,ni);

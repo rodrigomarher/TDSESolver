@@ -50,6 +50,8 @@ void TDSESolver::setup_geometry(){
     }
     path = "results/i.dat";
     write_array(_i,_param->ni,path);
+    path = "results/j.dat";
+    write_array(_j,_param->nj,path);
     path = "results/k.dat";
     write_array(_k,_param->nk,path);
 }
@@ -136,7 +138,8 @@ void TDSESolver::setup_diagnostics(){
 
 void TDSESolver::ipropagate(){
     (this->*(this->_ipropagate))();
-    _wf->set_to_ground();
+    if(_param->geometry != XYZ)
+        _wf->set_to_ground();
 }
 
 void TDSESolver::propagate(){
