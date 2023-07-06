@@ -13,6 +13,7 @@ test*
 data/
 data.txt
 data.txt.bak
+out_*
 !tdsesolver.py
 !tdsesolver_X.cpp
 !tdsesolver_XZ.cpp

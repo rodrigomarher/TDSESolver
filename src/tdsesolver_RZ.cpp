@@ -158,6 +158,8 @@
 
         if ((n+2)%_param->nt_diag==0 && n<(_param->nt-_param->nt%_param->nt_diag)){ 
             idx = n - _param->nt_diag + 2;
+            norm = _wf->norm_buf(_param->nt_diag-1);
+		    std::cout<<"Step: "<<n<<"; Norm: "<< norm<<std::endl;
             _diag->run_diagnostics(idx);
         }
     }

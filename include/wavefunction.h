@@ -78,6 +78,7 @@ class WF{
 	cdouble ***get_eigen(int n);
 
         cdouble norm();
+        cdouble norm_buf(int idx);
         void apply_mask(cdouble* imask, cdouble *jmask, cdouble *kmask);
         void apply_mask_X(cdouble* imask, cdouble *jmask, cdouble *kmask);
         void apply_mask_RZ(cdouble* imask, cdouble *jmask, cdouble *kmask);

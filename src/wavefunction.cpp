@@ -146,6 +146,46 @@ cdouble WF::norm(){
     return sqrt(integral);
 }
 
+cdouble WF::norm_buf(int idx){
+    cdouble integral = 0.0;
+    switch(_param->geometry){
+        case X:
+            for(int i=0; i<_ni;i++){
+                integral += _wf_buf[idx][i][0][0]*conj(_wf_buf[idx][i][0][0])*_di;
+            }
+            break;
+        case XZ:
+            for(int i=0; i<_ni;i++){
+                for(int k=0;k<_nk;k++){
+                    integral += _wf_buf[idx][i][0][k]*conj(_wf_buf[idx][i][0][k])*_di*_dk;
+                }
+            }
+            break;
+        case RZ:
+            for(int i=0; i<_ni;i++){
+                for(int k=0;k<_nk;k++){
+                    integral += 2*M_PI*_i[i]*_wf_buf[idx][i][0][k]*conj(_wf_buf[idx][i][0][k])*_di*_dk;
+                }
+            }
+            break;
+        case XYZ:
+            double sum = 0.0;
+            //#pragma omp parallel for reduction(+:sum)
+            for(int i=0;i<_ni;i++){
+                for(int j=0;j<_nj;j++){
+                    for(int k=0;k<_nk;k++){
+                        sum += (_wf_buf[idx][i][j][k]*conj(_wf_buf[idx][i][j][k])).real()*_di*_dk*_dj;
+                    }
+                }
+            }
+            integral = sum;
+            break;
+    }
+    return sqrt(integral);
+}
+
+
+
 void WF::apply_mask(cdouble *imask, cdouble *jmask, cdouble *kmask){
     (this->*(this->_apply_mask))(imask, jmask, kmask);
 }

@@ -1,29 +1,29 @@
 import numpy as np
 
 
-w0 = 0.057
+w0 = 0.0227
 pi = np.pi
 param = {"n_threads": 16,
-         "init_wf": 2,
+         "init_wf": 1,
          "use_potential": 1,
-         "geometry": 3,
-         "ni": 800,
-         "imin": -100.0,
-         "imax": 100.0,
+         "geometry": 2,
+         "ni": 4096,
+         "imin": -500.0,
+         "imax": 1024.0,
          "nj": 800,
-         "jmin": -100.0,
-         "jmax": 100.0,
-         "nk": 800,
-         "kmin": -100.0,
-         "kmax": 100.0,
+         "jmin": -500.0,
+         "jmax": 500.0,
+         "nk": 4096,
+         "kmin": -1024.0,
+         "kmax": 1024.0,
          "w0": w0,
          "period": 2*pi/w0,
          "tmax_ev": 4*2*pi/w0,
-         "tmax_sim": 4*2*pi/w0,
-         "dt": 0.02,
+         "tmax_sim": 5*2*pi/w0,
+         "dt": 0.08,
          "dt_ITP": 0.005,
-         "nt": int(4*2*pi/w0/0.02),
-         "nt_ITP": 2000,
+         "nt": int(5*2*pi/w0/0.08),
+         "nt_ITP": 100,
          "nt_diag": 100,
          "env": 0,
          "w0Ei": w0,
@@ -38,15 +38,14 @@ param = {"n_threads": 16,
          "B0i": 0.00,
          "B0j": 0.00,
          "B0k": 0.00,
-         "phiEi": 0.5*pi,
+         "phiEi": 0.0*pi,
          "phiEj": 0.0*pi,
          "phiEk": 0.0*pi,
          "phiBi": 0.0*pi,
          "phiBj": 0.0*pi,
          "phiBk": 0.0*pi,
-         "n_probes": 3,
-         "probe_def": ("acc_i,results/acc_i_1.dat;"
-                       "acc_j,results/acc_j_1.dat;"
-                       "acc_k,results/acc_k_1.dat;"
+         "n_probes": 2,
+         "probe_def": ("acc_i,results/acc_i_r1024_z1024_dx05_dt004_e0067.dat;"
+                       "acc_k,results/acc_k_r1024_z1024_dx05_dt004_e0067.dat;"
                        )
         }
