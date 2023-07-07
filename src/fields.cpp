@@ -1,8 +1,11 @@
 #include <iostream>
 #include <cmath>
+#include <fstream>
+#include <sstream>
 #include "fields.h"
 #include "debug.h"
 #include "parameters.h"
+#include "utils.h"
 
 Field::Field(){
     _field = NULL;
@@ -22,6 +25,31 @@ Field::Field(double amp, double w, double phi, int env, double tmax,  double *t,
         }        
     }
     _flag = true;
+}
+
+Field::Field(std::string &path, double tmax, double *t, const int nt){
+   const int n_file = calc_n_elem(path);
+   if(n_file != nt){
+        debug0("[Field::Field] File length not equal to number of temporal points.\n"); exit(1);
+   }
+
+   _nt  = nt; _tmax = tmax; _w = -1, _t = t;
+   _dt = _t[_nt-1]/(double)(_nt);
+   _field = new double[_nt];
+
+   std::ifstream file;
+   file.open(path);
+   std::string line;
+   int i = 0;
+   if(file.is_open()){
+        while(getline(file, line)){
+            std::stringstream ss(line);
+            ss >> _field[i]; 
+            i++;
+        }
+        file.close();
+   }
+   else{debug0("[Field::Field] Unable to open file.\n"); exit(1);}
 }
 
 void Field::calc_pot(){

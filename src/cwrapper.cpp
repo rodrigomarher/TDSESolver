@@ -31,6 +31,10 @@ extern "C"{
     void Parameters_nt(Parameters *p, int val){p->nt = val;}
     void Parameters_nt_ITP(Parameters *p, int val){p->nt_ITP = val;}
     void Parameters_nt_diag(Parameters *p, int val){p->nt_diag = val;}
+    void Parameters_use_field_file(Parameters *p, int val){p->use_field_file = val;}
+    void Parameters_file_fieldx(Parameters *p, char *val){p->set_path_fieldx(val);}
+    void Parameters_file_fieldy(Parameters *p, char *val){p->set_path_fieldy(val);}
+    void Parameters_file_fieldz(Parameters *p, char *val){p->set_path_fieldz(val);}
     void Parameters_env(Parameters *p, int val){p->env = val;}
     void Parameters_w0Ei(Parameters *p, double val){p->w0Ei = val;}
     void Parameters_w0Ej(Parameters *p, double val){p->w0Ej = val;}

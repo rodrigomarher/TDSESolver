@@ -47,6 +47,10 @@
             int nt;          
             int nt_ITP;      
             int nt_diag ;    
+            int use_field_file;
+            std::string file_fieldx;
+            std::string file_fieldy;
+            std::string file_fieldz;
             int env;         
             double w0Ei;     
             double w0Ek;    
@@ -73,6 +77,9 @@
             void check_param();	
             void print();
             void set_probe_def(char *val);
+            void set_path_fieldx(char *val);
+            void set_path_fieldy(char *val);
+            void set_path_fieldz(char *val);
     };
 
 #endif

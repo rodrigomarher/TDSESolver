@@ -18,35 +18,46 @@ void TDSESolver::_geom_XYZ(){
 }
 
 void TDSESolver::_fields_XYZ(){
-    std::string path;
+    if (_param->use_field_file == 0){
+        Afield_i = new Field(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_j = new Field(_param->E0j, _param->w0Ej, _param->phiEj, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_j = new Field(_param->B0j, _param->w0Bj, _param->phiBj, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_k = new Field(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_k =new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+    }
 
-    Afield_i = new Field(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+    else{
+        Afield_i = new Field(_param->file_fieldx, _param->tmax_ev, _t, _param->nt);
+        Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_j = new Field(_param->file_fieldy, _param->tmax_ev, _t, _param->nt);
+        Bfield_j = new Field(_param->B0j, _param->w0Bj, _param->phiBj, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_k = new Field(_param->file_fieldz, _param->tmax_ev, _t, _param->nt);
+        Bfield_k = new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+    }
+
+    std::string path;
     path = "results/Efield_i.dat";
     write_array(Afield_i->get(),_param->nt,path);
     Afield_i->calc_pot();
     path = "results/Afield_i.dat";
     write_array(Afield_i->get(), _param->nt, path);
-    Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
     path = "results/Bfield_i.dat";
     write_array(Bfield_i->get(), _param->nt, path);
 
-    Afield_j = new Field(_param->E0j, _param->w0Ej, _param->phiEj, _param->env, _param->tmax_ev, _t, _param->nt);
     path = "results/Efield_j.dat";
     write_array(Afield_j->get(), _param->nt, path);
     Afield_j->calc_pot();
     path = "results/Afield_j.dat";
     write_array(Afield_j->get(), _param->nt, path);
-    Bfield_j = new Field(_param->B0j, _param->w0Bj, _param->phiBj, _param->env, _param->tmax_ev, _t, _param->nt);
     path = "results/Bfield_j.dat";
     write_array(Bfield_j->get(), _param->nt, path);
 
-    Afield_k = new Field(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
     path = "results/Efield_k.dat";
     write_array(Afield_k->get(),_param->nt, path);
     Afield_k->calc_pot();
     path = "results/Afield_k.dat";
     write_array(Afield_k->get(),_param->nt, path);
-    Bfield_k =new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
     path = "results/Bfield_k.dat";
     write_array(Bfield_k->get(),_param->nt, path);
 }
@@ -120,8 +131,8 @@ void TDSESolver::_ipropagate_XYZ(){
         ener_old=0.0;
         eps = 1000;
         
-        _wf->gaussian_anti(0.0,0.0,0.0,0.1);
-
+        //_wf->gaussian_anti(0.0,0.0,0.0,0.1);
+        
         cdouble norm = _wf->norm();
         (*_wf) /= norm;
 
@@ -158,7 +169,7 @@ void TDSESolver::_ipropagate_XYZ(){
                     _wf->set_k_row(psi_k_row[id],i,j);
                 }
             }
-            _wf->anti_sym_k();
+            //_wf->anti_sym_k();
             norm = _wf->norm();
             (*_wf) /= norm;
             tend = omp_get_wtime();

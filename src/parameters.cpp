@@ -35,6 +35,10 @@ Parameters::Parameters(){
         nt_diag     = 100;
 
         //Fields
+        use_field_file = 0;
+        file_fieldx = "";
+        file_fieldy = "";
+        file_fieldz = "";
         env         = SIN2;
         w0Ei        = w0;
         w0Ej        = w0;
@@ -93,6 +97,17 @@ void Parameters::set_probe_def(char *val){
     probe_def = std::string(val);
 }
 
+void Parameters::set_path_fieldx(char *val){
+    file_fieldx = std::string(val);
+}
+
+void Parameters::set_path_fieldy(char *val){
+    file_fieldy = std::string(val);
+}
+
+void Parameters::set_path_fieldz(char *val){
+    file_fieldz = std::string(val);
+}
 
 void Parameters::print(){
     std::cout<<"Parameters:\n";
@@ -119,6 +134,10 @@ void Parameters::print(){
     std::cout<<"\tnt: "<<nt<<std::endl;
     std::cout<<"\tnt_ITP: "<<nt_ITP<<std::endl;
     std::cout<<"\tnt_diag: "<<nt_diag<<std::endl;
+    std::cout<<"\tuse_file_field: "<<use_field_file<<std::endl;
+    std::cout<<"\tfile_fieldx: "<<file_fieldx<<std::endl;
+    std::cout<<"\tfile_fieldy: "<<file_fieldy<<std::endl;
+    std::cout<<"\tfile_fieldz: "<<file_fieldz<<std::endl;
     std::cout<<"\tenv: "<<env<<std::endl;
     std::cout<<"\tw0Ei: "<<w0Ei<<std::endl;
     std::cout<<"\tw0Ej: "<<w0Ej<<std::endl;

@@ -78,6 +78,14 @@ class Parameters:
         lib.Parameters_nt_ITP.restype = ct.c_void_p
         lib.Parameters_nt_diag.argtypes = [ct.c_void_p, ct.c_int]
         lib.Parameters_nt_diag.restype = ct.c_void_p
+        lib.Parameters_use_field_file.argtypes = [ct.c_void_p, ct.c_int]
+        lib.Parameters_use_field_file.restype = ct.c_void_p
+        lib.Parameters_file_fieldx.argtypes = [ct.c_void_p, ct.c_char_p]
+        lib.Parameters_file_fieldx.restype = ct.c_void_p
+        lib.Parameters_file_fieldy.argtypes = [ct.c_void_p, ct.c_char_p]
+        lib.Parameters_file_fieldy.restype = ct.c_void_p
+        lib.Parameters_file_fieldz.argtypes = [ct.c_void_p, ct.c_char_p]
+        lib.Parameters_file_fieldz.restype = ct.c_void_p
         lib.Parameters_env.argtypes = [ct.c_void_p, ct.c_int]
         lib.Parameters_env.restype = ct.c_void_p
         lib.Parameters_w0Ei.argtypes = [ct.c_void_p, ct.c_double]
@@ -151,6 +159,10 @@ class Parameters:
         self.nt(param["nt"])
         self.nt_ITP(param["nt_ITP"])
         self.nt_diag(param["nt_diag"])
+        self.use_field_file(param["use_field_file"])
+        self.file_fieldx(param["file_fieldx"])
+        self.file_fieldy(param["file_fieldy"])
+        self.file_fieldz(param["file_fieldz"])
         self.env(param["env"])
         self.w0Ei(param["w0Ei"])
         self.w0Ej(param["w0Ej"])
@@ -219,6 +231,14 @@ class Parameters:
         lib.Parameters_nt_ITP(self._obj, val)
     def nt_diag(self, val):
         lib.Parameters_nt_diag(self._obj, val)
+    def use_field_file(self, val):
+        lib.Parameters_use_field_file(self._obj, val)
+    def file_fieldx(self, val):
+        lib.Parameters_file_fieldx(self._obj, val.encode("utf-8"))
+    def file_fieldy(self, val):
+        lib.Parameters_file_fieldy(self._obj, val.encode("utf-8"))
+    def file_fieldz(self, val):
+        lib.Parameters_file_fieldz(self._obj, val.encode("utf-8"))
     def env(self, val):
         lib.Parameters_env(self._obj, val)
     def w0Ei(self, val):

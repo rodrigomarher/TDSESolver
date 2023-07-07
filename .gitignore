@@ -14,6 +14,8 @@ data/
 data.txt
 data.txt.bak
 out_*
+*.ipynb
+efields/
 !tdsesolver.py
 !tdsesolver_X.cpp
 !tdsesolver_XZ.cpp

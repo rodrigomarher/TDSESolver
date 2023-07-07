@@ -1,21 +1,21 @@
 import numpy as np
 
 
-w0 = 0.0227
+w0 = 0.057
 pi = np.pi
 param = {"n_threads": 16,
          "init_wf": 1,
          "use_potential": 1,
-         "geometry": 2,
-         "ni": 4096,
-         "imin": -500.0,
-         "imax": 1024.0,
-         "nj": 800,
-         "jmin": -500.0,
-         "jmax": 500.0,
-         "nk": 4096,
-         "kmin": -1024.0,
-         "kmax": 1024.0,
+         "geometry": 3,
+         "ni": 400,
+         "imin": -100.0,
+         "imax": 100.0,
+         "nj": 400,
+         "jmin": -100.0,
+         "jmax": 100.0,
+         "nk": 400,
+         "kmin": -100.0,
+         "kmax": 100.0,
          "w0": w0,
          "period": 2*pi/w0,
          "tmax_ev": 4*2*pi/w0,
@@ -25,6 +25,10 @@ param = {"n_threads": 16,
          "nt": int(5*2*pi/w0/0.08),
          "nt_ITP": 100,
          "nt_diag": 100,
+         "use_field_file": 1,
+         "file_fieldx": "efields/fieldy.txt",
+         "file_fieldy": "efields/fieldx.txt",
+         "file_fieldz": "efields/fieldz.txt",
          "env": 0,
          "w0Ei": w0,
          "w0Ej": w0, 
@@ -44,8 +48,9 @@ param = {"n_threads": 16,
          "phiBi": 0.0*pi,
          "phiBj": 0.0*pi,
          "phiBk": 0.0*pi,
-         "n_probes": 2,
+         "n_probes": 3,
          "probe_def": ("acc_i,results/acc_i_r1024_z1024_dx05_dt004_e0067.dat;"
+                       "acc_j,results/acc_j_r1024_z1024_dx05_dt004_e0067.dat;"
                        "acc_k,results/acc_k_r1024_z1024_dx05_dt004_e0067.dat;"
                        )
         }

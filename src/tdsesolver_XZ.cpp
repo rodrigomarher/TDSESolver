@@ -18,11 +18,24 @@ void TDSESolver::_geom_XZ(){
 }
 
 void TDSESolver::_fields_XZ(){
+    if(_param->use_field_file==0){
+        Afield_i = new Field(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_k = new Field(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiBi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_k = new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+    }
+    else{
+        Afield_i = new Field(_param->file_fieldx, _param->tmax_ev, _t, _param->nt);
+        Afield_k = new Field(_param->file_fieldz, _param->tmax_ev, _t, _param->nt);
+        Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiBi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_k = new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+    }
     std::string path;
-    Afield_i = new Field(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
-    Afield_k = new Field(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
-    Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiBi, _param->env, _param->tmax_ev, _t, _param->nt);
-    Bfield_k = new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+    path = "results/Efield_i.dat";
+    write_array(Afield_i->get(),_param->nt,path);
+    path = "results/Efield_k.dat";
+    write_array(Afield_k->get(),_param->nt,path);
+
     Afield_i->calc_pot();
     Afield_k->calc_pot();
     path = "results/Afield_i.dat";
