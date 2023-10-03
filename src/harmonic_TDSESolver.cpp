@@ -43,7 +43,41 @@ void writeField(Field *field, int n, std::string tmppath){
         }
         efieldz.close();
     }
+}
 
+void readAccel(std::string tmppath, double *accel_x, double *accel_y, double *accel_z, const int n){
+    std::string path_accel_x = tmppath + "/acc_i.dat";
+    std::string path_accel_y = tmppath + "/acc_j.dat";
+    std::string path_accel_z = tmppath + "/acc_k.dat";
+    
+    std::ifstram file_accel_x(path_accel_x);
+    std::complex<double> value = (0.0,0.0)
+    if(file_accel_x.is_open()){
+        for(int i=0; i<n; i++){
+            file_accel_x >> value;
+            accel_x[i] = value.real();
+        }
+        file_accel_x.close();
+    }
+
+    std::ifstram file_accel_y(path_accel_y);
+    if(file_accel_y.is_open()){
+        for(int i=0; i<n; i++){
+            file_accel_y >> value;
+            accel_y[i] = value.real();
+        }
+        file_accel_y.close();
+    }
+/*
+    std::ifstram file_accel_z(path_accel_z);
+    if(file_accel_z.is_open()){
+        for(int i=0; i<n; i++){
+            file_accel_z >> value;
+            accel_z[i] = value.real();
+        }
+        file_accel_z.close();
+    }
+*/
 }
 
 HarmonicTDSESolver::HarmonicTDSESolver(std::shared_ptr<Settings> settings) : Harmonic(settings){
@@ -97,9 +131,10 @@ void HarmonicTDSESolver::calculateAcceleration(Field *field){
 
 
     writeField(field, param->nt, tmp_path_efields);
-
+    double *accel_z = nullptr;
     tdsesolver = new TDSESolver(param);
     tdsesolver->ipropagate();
     tdsesolver->propagate();
+    readAccel(tmp_path_results, mAccelX, mAccelY, accel_z, _param->nt);
     delete tdsesolver;
 }
