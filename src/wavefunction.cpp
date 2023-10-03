@@ -455,6 +455,7 @@ void WF::grand_schmidt(){
             }
         }
     }
+    proj.clear();
 }
 
 
@@ -477,9 +478,9 @@ void WF::save_wf2(std::string name){
             std::ofstream outfile_X;
             std::ofstream outfile_Y;
             std::ofstream outfile_Z;
-            outfile_X.open("results/" + name + "_X.dat");
-            outfile_Y.open("results/" + name + "_Y.dat");
-            outfile_Z.open("results/" + name + "_Z.dat");
+            outfile_X.open(_param->path_results + "/" + name + "_X.dat");
+            outfile_Y.open(_param->path_results + "/" + name + "_Y.dat");
+            outfile_Z.open(_param->path_results + "/" + name + "_Z.dat");
 
             for(int j=0;j<_nj;j++){
                 for(int k=0; k<_nk;k++){
@@ -523,7 +524,7 @@ WF::~WF(){
         free4d(&_wf_buf,_ni,_nj,_nk, 1);
     else
         free4d(&_wf_buf, _ni, _nj, _nk, _param->nt_diag);
-    free4d(&_eigen_wf, 3, _ni, _nj, _nk);
+    free4d(&_eigen_wf, _ni, _nj, _nk, 5);
     //if(_param->geometry != XYZ)
     //    free3d(&_wf_0,_ni,_nk,_nk);
     //else

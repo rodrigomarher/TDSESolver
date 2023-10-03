@@ -44,7 +44,7 @@ void Hamiltonian::set_geometry(double *i, double *j, double *k, double *t, const
     _i = i; _j = j; _k = k; _t = t; _di = di; _dj = dj ; _dk = dk; _dt = dt;
 }
 
-void Hamiltonian::set_fields(Field* field1, Field* field2, Field* field3, Field* field4, Field* field5, Field* field6){
+void Hamiltonian::set_fields(Field_TDSESolver* field1, Field_TDSESolver* field2, Field_TDSESolver* field3, Field_TDSESolver* field4, Field_TDSESolver* field5, Field_TDSESolver* field6){
     Afield_i = field1;
     Afield_j = field2;
     Afield_k = field3;

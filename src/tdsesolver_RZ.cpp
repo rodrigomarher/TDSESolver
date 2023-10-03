@@ -23,19 +23,19 @@
 
 	void TDSESolver::_fields_RZ(){
         if(_param->use_field_file == 0){
-	        Afield_k = new Field(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
+	        Afield_k = new Field_TDSESolver(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
         }
         else{
-	        Afield_k = new Field(_param->file_fieldz, _param->tmax_ev, _t, _param->nt);
+	        Afield_k = new Field_TDSESolver(_param->file_fieldz, _param->tmax_ev, _t, _param->nt);
         }
 	    std::string path;
-	    path = "results/Efield_k.dat";
+	    path = _param->path_results + "/Efield_k.dat";
 	    write_array(Afield_k->get(),_param->nt,path);
-	    Bfield_k = new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+	    Bfield_k = new Field_TDSESolver(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
 	    Afield_k->calc_pot();
-	    path = "results/Afield_k.dat";
+	    path = _param->path_results + "/Afield_k.dat";
 	    write_array(Afield_k->get(),_param->nt,path);
-	    path = "results/Bfield_k.dat";
+	    path = _param->path_results + "/Bfield_k.dat";
 	    write_array(Bfield_k->get(),_param->nt,path);
 
 	    Afield_i = NULL;
@@ -71,9 +71,9 @@
 		}
 	    }
 	    _jmask[0] = 1.0;
-	    path = "results/imask.dat";
+	    path = _param->path_results + "/imask.dat";
 	    write_array(_imask,_param->ni,path);
-	    path = "results/kmask.dat";
+	    path = _param->path_results + "/kmask.dat";
 	    write_array(_kmask,_param->nk,path);
 	}
 

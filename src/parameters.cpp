@@ -67,6 +67,7 @@ Parameters::Parameters(){
 	    //File paths
         probe_def   = "acc_i,results/acc_i_test_diag.dat;"
                       "acc_k,results/acc_k_test_diag.dat";
+        path_results = "results/";
         check_param();
 }
 
@@ -109,6 +110,9 @@ void Parameters::set_path_fieldz(char *val){
     file_fieldz = std::string(val);
 }
 
+void Parameters::set_path_results(char *val){
+    path_results = std::string(val);
+}
 void Parameters::print(){
     std::cout<<"Parameters:\n";
     std::cout<<"------------------------\n";
@@ -158,6 +162,7 @@ void Parameters::print(){
     std::cout<<"\tphiBj: "<<phiBj<<std::endl;
     std::cout<<"\tphiBk: "<<phiBk<<std::endl;
     std::cout<<"\tn_probes: "<<n_probes<<std::endl;
+    std::cout<<"\tpath_results: "<<path_results<<std::endl;
     std::cout<<"\tprobe_def: "<<probe_def<<std::endl;
     std::cout<<std::endl;
 }

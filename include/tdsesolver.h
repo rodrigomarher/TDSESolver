@@ -15,12 +15,12 @@
         private:
             Parameters *_param;
 
-            Field *Afield_i;
-            Field *Afield_j;
-            Field *Afield_k;
-            Field *Bfield_i;
-            Field *Bfield_j;
-            Field *Bfield_k;
+            Field_TDSESolver *Afield_i;
+            Field_TDSESolver *Afield_j;
+            Field_TDSESolver *Afield_k;
+            Field_TDSESolver *Bfield_i;
+            Field_TDSESolver *Bfield_j;
+            Field_TDSESolver *Bfield_k;
             
             WF *_wf;
             Hamiltonian *_ham;

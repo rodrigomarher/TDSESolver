@@ -7,11 +7,11 @@
 #include "parameters.h"
 #include "utils.h"
 
-Field::Field(){
+Field_TDSESolver::Field_TDSESolver(){
     _field = NULL;
 }
 
-Field::Field(double amp, double w, double phi, int env, double tmax,  double *t, int nt){
+Field_TDSESolver::Field_TDSESolver(double amp, double w, double phi, int env, double tmax,  double *t, int nt){
     _nt = nt; _tmax = tmax; _w = w; _t = t;
     _dt = _t[_nt-1]/(double)(_nt);
     _field = new double[_nt];
@@ -27,7 +27,7 @@ Field::Field(double amp, double w, double phi, int env, double tmax,  double *t,
     _flag = true;
 }
 
-Field::Field(std::string &path, double tmax, double *t, const int nt){
+Field_TDSESolver::Field_TDSESolver(std::string &path, double tmax, double *t, const int nt){
    const int n_file = calc_n_elem(path);
    if(n_file != nt){
         debug0("[Field::Field] File length not equal to number of temporal points.\n"); exit(1);
@@ -52,7 +52,7 @@ Field::Field(std::string &path, double tmax, double *t, const int nt){
    else{debug0("[Field::Field] Unable to open file.\n"); exit(1);}
 }
 
-void Field::calc_pot(){
+void Field_TDSESolver::calc_pot(){
     double *temp;
     temp = new double[_nt];
     
@@ -69,18 +69,18 @@ void Field::calc_pot(){
     delete[] temp;
 }
 
-double Field::operator[](int i){
+double Field_TDSESolver::operator[](int i){
     return _field[i];
 }
 
-double Field::get(int i){
+double Field_TDSESolver::get(int i){
     return _field[i];
 }
 
-double* Field::get(){
+double* Field_TDSESolver::get(){
     return _field;
 }
-double Field::env_sin2(double ti){
+double Field_TDSESolver::env_sin2(double ti){
     if (ti<_tmax){
         return pow(sin(M_PI*ti/_tmax),2);
     }
@@ -90,7 +90,7 @@ double Field::env_sin2(double ti){
 
 }
 
-double Field::env_trap(double ti){
+double Field_TDSESolver::env_trap(double ti){
     double T = 2*M_PI/_w;
     if (ti<_tmax+2.0*T){
          if (ti<T){
@@ -108,6 +108,6 @@ double Field::env_trap(double ti){
     }
 }
 
-Field::~Field(){
+Field_TDSESolver::~Field_TDSESolver(){
     delete[] _field;
 }

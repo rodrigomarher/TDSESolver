@@ -131,6 +131,7 @@ void free3d(T ****arr, const int ni, const int nj, const int nk){
 
 template <class T>
 void free4d(T *****arr, const int ni, const int nj, const int nk, const int n){
+    std::cout<<"[free4d]"<<std::endl;
     for(int p=0; p<n; p++){
         for(int i=0; i<ni; i++){
             for(int j=0; j<nj; j++){

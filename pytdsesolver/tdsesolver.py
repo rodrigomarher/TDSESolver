@@ -128,6 +128,8 @@ class Parameters:
         lib.Parameters_n_probes.restype = ct.c_void_p
         lib.Parameters_probe_def.argtypes = [ct.c_void_p, ct.c_char_p]
         lib.Parameters_probe_def.restype = ct.c_void_p
+        lib.Parameters_path_results.argtypes =[ct.c_void_p, ct.c_char_p]
+        lib.Parameters_path_results_restype = ct.c_void_p
         self._obj = lib.Parameters_new()
 
     def print(self):
@@ -184,7 +186,7 @@ class Parameters:
         self.phiBk(param["phiBk"])
         self.n_probes(param["n_probes"])
         self.probe_def(param["probe_def"])
-        
+        self.path_results(param["path_results"]) 
         self.check_param()
     
     def n_threads(self, val):
@@ -283,4 +285,6 @@ class Parameters:
         lib.Parameters_n_probes(self._obj, val)
     def probe_def(self, val):
         lib.Parameters_probe_def(self._obj, val.encode("utf-8"))
+    def path_results(self, val):
+        lib.Parameters_path_results(self._obj, val.enconde("utf-8"))
 

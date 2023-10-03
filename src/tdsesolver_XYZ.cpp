@@ -19,46 +19,46 @@ void TDSESolver::_geom_XYZ(){
 
 void TDSESolver::_fields_XYZ(){
     if (_param->use_field_file == 0){
-        Afield_i = new Field(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
-        Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
-        Afield_j = new Field(_param->E0j, _param->w0Ej, _param->phiEj, _param->env, _param->tmax_ev, _t, _param->nt);
-        Bfield_j = new Field(_param->B0j, _param->w0Bj, _param->phiBj, _param->env, _param->tmax_ev, _t, _param->nt);
-        Afield_k = new Field(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
-        Bfield_k =new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_i = new Field_TDSESolver(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_i = new Field_TDSESolver(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_j = new Field_TDSESolver(_param->E0j, _param->w0Ej, _param->phiEj, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_j = new Field_TDSESolver(_param->B0j, _param->w0Bj, _param->phiBj, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_k = new Field_TDSESolver(_param->E0k, _param->w0Ek, _param->phiEk, _param->env, _param->tmax_ev, _t, _param->nt);
+        Bfield_k =new Field_TDSESolver(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
     }
 
     else{
-        Afield_i = new Field(_param->file_fieldx, _param->tmax_ev, _t, _param->nt);
-        Bfield_i = new Field(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
-        Afield_j = new Field(_param->file_fieldy, _param->tmax_ev, _t, _param->nt);
-        Bfield_j = new Field(_param->B0j, _param->w0Bj, _param->phiBj, _param->env, _param->tmax_ev, _t, _param->nt);
-        Afield_k = new Field(_param->file_fieldz, _param->tmax_ev, _t, _param->nt);
-        Bfield_k = new Field(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_i = new Field_TDSESolver(_param->file_fieldx, _param->tmax_ev, _t, _param->nt);
+        Bfield_i = new Field_TDSESolver(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_j = new Field_TDSESolver(_param->file_fieldy, _param->tmax_ev, _t, _param->nt);
+        Bfield_j = new Field_TDSESolver(_param->B0j, _param->w0Bj, _param->phiBj, _param->env, _param->tmax_ev, _t, _param->nt);
+        Afield_k = new Field_TDSESolver(_param->file_fieldz, _param->tmax_ev, _t, _param->nt);
+        Bfield_k = new Field_TDSESolver(_param->B0k, _param->w0Bk, _param->phiBk, _param->env, _param->tmax_ev, _t, _param->nt);
     }
 
     std::string path;
-    path = "results/Efield_i.dat";
+    path = _param->path_results + "/Efield_i.dat";
     write_array(Afield_i->get(),_param->nt,path);
     Afield_i->calc_pot();
-    path = "results/Afield_i.dat";
+    path = _param->path_results + "/Afield_i.dat";
     write_array(Afield_i->get(), _param->nt, path);
-    path = "results/Bfield_i.dat";
+    path = _param->path_results + "/Bfield_i.dat";
     write_array(Bfield_i->get(), _param->nt, path);
 
-    path = "results/Efield_j.dat";
+    path = _param->path_results + "/Efield_j.dat";
     write_array(Afield_j->get(), _param->nt, path);
     Afield_j->calc_pot();
-    path = "results/Afield_j.dat";
+    path = _param->path_results + "/Afield_j.dat";
     write_array(Afield_j->get(), _param->nt, path);
-    path = "results/Bfield_j.dat";
+    path = _param->path_results + "/Bfield_j.dat";
     write_array(Bfield_j->get(), _param->nt, path);
 
-    path = "results/Efield_k.dat";
+    path = _param->path_results + "/Efield_k.dat";
     write_array(Afield_k->get(),_param->nt, path);
     Afield_k->calc_pot();
-    path = "results/Afield_k.dat";
+    path = _param->path_results + "/Afield_k.dat";
     write_array(Afield_k->get(),_param->nt, path);
-    path = "results/Bfield_k.dat";
+    path = _param->path_results + "/Bfield_k.dat";
     write_array(Bfield_k->get(),_param->nt, path);
 }
 
@@ -136,8 +136,8 @@ void TDSESolver::_ipropagate_XYZ(){
         cdouble norm = _wf->norm();
         (*_wf) /= norm;
 
-        //for(int n=0; n<_param->nt_ITP;n++){
-        while((eps > 1e-4)){ // || (counter<_param->nt_ITP)){
+        for(int n=0; n<_param->nt_ITP;n++){
+        //while((eps > 1e-4)){ // || (counter<_param->nt_ITP)){
             double tstart, tend;
             tstart = omp_get_wtime();
             #pragma omp parallel for collapse(1) schedule(dynamic)
@@ -176,7 +176,7 @@ void TDSESolver::_ipropagate_XYZ(){
             std::cout<<"n: "<<counter<<" timestep: "<<tend-tstart<<"\n";
 
             if(counter%5==0){
-                _wf->grand_schmidt(); 
+                //_wf->grand_schmidt(); 
                 ener = (_ham->*(_ham->ener))(_wf->get());
 	        eps = std::abs((std::real(ener)-std::real(ener_old))/std::real(ener));
                 std::cout<<"State: "<<m<<" Norm: "<< norm<<" Ener: "<<ener<<" Eps: "<<eps<<"\n";
@@ -186,9 +186,9 @@ void TDSESolver::_ipropagate_XYZ(){
 
         }
         std::cout<<"Ener: "<<ener<<"\n";
-        _wf->set_to_eigen(m);
-	std::string name = "argon_"+ std::to_string(m);
-	_wf->save_wf2(name);
+        //_wf->set_to_eigen(m);
+	//std::string name = "argon_"+ std::to_string(m);
+	//_wf->save_wf2(name);
     }
     free2d(&psi_i_row,_param->n_threads,ni);
     free2d(&psi_j_row,_param->n_threads,nj);

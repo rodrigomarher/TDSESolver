@@ -56,4 +56,5 @@ extern "C"{
     void Parameters_phiBk(Parameters *p, double val){p->phiBk = val;}
     void Parameters_n_probes(Parameters *p, int val){p->n_probes = val;}
     void Parameters_probe_def(Parameters *p, char *val){p->set_probe_def(val);}
+    void Parameters_path_results(Parameters*p, char*val){p->set_path_results(val);}
 }

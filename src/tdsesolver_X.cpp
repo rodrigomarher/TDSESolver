@@ -19,17 +19,17 @@ void TDSESolver::_geom_X(){
 
 void TDSESolver::_fields_X(){
     if(_param->use_field_file==0){
-        Afield_i = new Field(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev,_t, _param->nt);
+        Afield_i = new Field_TDSESolver(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev,_t, _param->nt);
     }
     else{
     
-        Afield_i = new Field(_param->file_fieldx, _param->tmax_ev, _t, _param->nt);
+        Afield_i = new Field_TDSESolver(_param->file_fieldx, _param->tmax_ev, _t, _param->nt);
     }
     std::string path;
-    path = "results/Efield_i.dat";
+    path = _param->path_results + "/Efield_i.dat";
     write_array(Afield_i->get(),_param->nt,path);
     Afield_i->calc_pot();
-    path = "results/Afield_i.dat";
+    path = _param->path_results + "/Afield_i.dat";
     write_array(Afield_i->get(),_param->nt,path);
     Afield_k = NULL;
     Afield_j = NULL;
@@ -57,11 +57,11 @@ void TDSESolver::_masks_X(){
     }
     _kmask[0] = 1.0;
     _jmask[0] = 1.0;
-    path = "results/imask.dat";
+    path = _param->path_results + "/imask.dat";
     write_array(_imask,_param->ni,path);
-    path = "results/jmask.dat";
+    path = _param->path_results + "/jmask.dat";
     write_array(_jmask,_param->nj,path);
-    path = "results/kmask.dat";
+    path = _param->path_results + "/kmask.dat";
     write_array(_kmask,_param->nk,path);
 
 }
@@ -84,7 +84,7 @@ void TDSESolver::_ipropagate_X(){
     }
 
     std::cout<<"Norm: "<<_wf->norm()<<"\n";   
-    std::string path = "results/itp_psi2.dat";
+    std::string path = _param->path_results + "/itp_psi2.dat";
     
     debug3("[TDSESolver->ipropagate] End imaginary propagation");
 

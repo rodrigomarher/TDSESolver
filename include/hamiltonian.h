@@ -12,12 +12,12 @@ class Hamiltonian{
     private:
         Parameters *_param;
 
-        Field *Afield_i;
-        Field *Afield_j;
-        Field *Afield_k;
-        Field *Bfield_i;
-        Field *Bfield_j;
-        Field *Bfield_k;
+        Field_TDSESolver *Afield_i;
+        Field_TDSESolver *Afield_j;
+        Field_TDSESolver *Afield_k;
+        Field_TDSESolver *Bfield_i;
+        Field_TDSESolver *Bfield_j;
+        Field_TDSESolver *Bfield_k;
 
         double *_i, *_j, *_k, *_t;
         double _di, _dj, _dk, _dt;
@@ -51,7 +51,7 @@ class Hamiltonian{
         Hamiltonian();
         Hamiltonian(Parameters *param);
         void set_geometry(double *i, double *j, double *k, double *t, const double di, const double dj, const double dk, const double dt);
-        void set_fields(Field* field1, Field* field2, Field* field3, Field* field4, Field* field5, Field* field6);
+        void set_fields(Field_TDSESolver* field1, Field_TDSESolver* field2, Field_TDSESolver* field3, Field_TDSESolver* field4, Field_TDSESolver* field5, Field_TDSESolver* field6);
         cdouble dpotential_i(double i, double j, double k);
         cdouble dpotential_k(double i, double j, double k); 
         cdouble dpotential_j(double i, double j, double k);

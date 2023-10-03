@@ -28,7 +28,7 @@ TDSESolver::TDSESolver(Parameters *param){
 void TDSESolver::setup_time(){
     std::string path;
     std::tie(_t,_dt) = linspace<double>(0.0,_param->tmax_sim, _param->nt);
-    path = "results/time.dat";
+    path = _param->path_results + "/time.dat";
     write_array(_t,_param->nt,path);
 }
 
@@ -48,9 +48,9 @@ void TDSESolver::setup_geometry(){
             _geom_XYZ();
             break;
     }
-    path = "results/i.dat";
+    path = _param->path_results + "/i.dat";
     write_array(_i,_param->ni,path);
-    path = "results/k.dat";
+    path = _param->path_results + "/k.dat";
     write_array(_k,_param->nk,path);
 }
 

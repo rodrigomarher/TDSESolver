@@ -7,20 +7,20 @@
 
 int main(){
     Parameters param;
-    param.n_threads = 4;
+    param.n_threads = 8;
 
     param.geometry = XYZ;
     param.init_wf = EXPO;
-    param.use_potential = 0;
-    param.ni = 10;
-    param.nk = 10;
-    param.nj = 10;
-    param.imin = -20;
-    param.imax = 20;
-    param.jmin = 20;
-    param.jmax = 20;
-    param.kmin = -20;
-    param.kmax =  20;
+    param.use_potential = 1;
+    param.ni = 512;
+    param.nk = 512;
+    param.nj = 512;
+    param.imin = -50;
+    param.imax = 50;
+    param.jmin = -50;
+    param.jmax = 50;
+    param.kmin = -50;
+    param.kmax =  50;
 				
     param.w0 = 0.057;
     param.period = 2.0*M_PI/param.w0;

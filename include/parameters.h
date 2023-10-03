@@ -72,6 +72,7 @@
             double phiBj;
             int n_probes;
             std::string probe_def;
+            std::string path_results;
             Parameters();
 
             void check_param();	
@@ -80,6 +81,7 @@
             void set_path_fieldx(char *val);
             void set_path_fieldy(char *val);
             void set_path_fieldz(char *val);
+            void set_path_results(char *val);
     };
 
 #endif

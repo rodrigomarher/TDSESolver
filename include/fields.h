@@ -5,7 +5,7 @@
 #define TRAP 1
 
 #include <string>
-class Field{
+class Field_TDSESolver{
     private:
         int _nt;
         bool _flag = false;
@@ -16,14 +16,14 @@ class Field{
         double env_trap(double ti);
         
     public:
-        Field();
-        Field(double amp, double w, double phi, int env, double tmax, double *t, int nt);
-        Field(std::string &path, double tmax, double *t, const int nt);
+        Field_TDSESolver();
+        Field_TDSESolver(double amp, double w, double phi, int env, double tmax, double *t, int nt);
+        Field_TDSESolver(std::string &path, double tmax, double *t, const int nt);
         void calc_pot();
         double get(int i);
         double* get();
         double operator[](int i);
-        ~Field();
+        ~Field_TDSESolver();
 };
 
 #endif
