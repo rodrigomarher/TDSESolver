@@ -50,8 +50,8 @@ void readAccel(std::string tmppath, double *accel_x, double *accel_y, double *ac
     std::string path_accel_y = tmppath + "/acc_j.dat";
     std::string path_accel_z = tmppath + "/acc_k.dat";
     
-    std::ifstram file_accel_x(path_accel_x);
-    std::complex<double> value = (0.0,0.0)
+    std::ifstream file_accel_x(path_accel_x);
+    std::complex<double> value = (0.0,0.0);
     if(file_accel_x.is_open()){
         for(int i=0; i<n; i++){
             file_accel_x >> value;
@@ -60,7 +60,7 @@ void readAccel(std::string tmppath, double *accel_x, double *accel_y, double *ac
         file_accel_x.close();
     }
 
-    std::ifstram file_accel_y(path_accel_y);
+    std::ifstream file_accel_y(path_accel_y);
     if(file_accel_y.is_open()){
         for(int i=0; i<n; i++){
             file_accel_y >> value;
@@ -69,7 +69,7 @@ void readAccel(std::string tmppath, double *accel_x, double *accel_y, double *ac
         file_accel_y.close();
     }
 /*
-    std::ifstram file_accel_z(path_accel_z);
+    std::ifstream file_accel_z(path_accel_z);
     if(file_accel_z.is_open()){
         for(int i=0; i<n; i++){
             file_accel_z >> value;
@@ -96,6 +96,7 @@ HarmonicTDSESolver::HarmonicTDSESolver(std::shared_ptr<Settings> settings) : Har
     param->jmax           =  mSettings->mData.tdsesolver_ymax;
     param->kmin           = -mSettings->mData.tdsesolver_zmax;
     param->kmax           =  mSettings->mData.tdsesolver_zmax;
+    param->tmax_ev        =  mSettings->TMAX;
     param->tmax_sim       =  mSettings->TMAX;
     param->nt             =  mSettings->NDT;
     param->dt             =  mSettings->DT;
@@ -135,6 +136,6 @@ void HarmonicTDSESolver::calculateAcceleration(Field *field){
     tdsesolver = new TDSESolver(param);
     tdsesolver->ipropagate();
     tdsesolver->propagate();
-    readAccel(tmp_path_results, mAccelX, mAccelY, accel_z, _param->nt);
+    readAccel(tmp_path_results, mAccelX, mAccelY, accel_z, param->nt);
     delete tdsesolver;
 }
