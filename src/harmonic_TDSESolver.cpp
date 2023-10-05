@@ -105,7 +105,6 @@ HarmonicTDSESolver::HarmonicTDSESolver(std::shared_ptr<Settings> settings) : Har
     param->nt_diag        =  mSettings->mData.tdsesolver_ntDiag;
         
     param->check_param();
-    param->print();
 }
 
 HarmonicTDSESolver::~HarmonicTDSESolver(){
@@ -131,6 +130,8 @@ void HarmonicTDSESolver::calculateAcceleration(Field *field){
                              "acc_k," + tmp_path_results + "/acc_k.dat";
 
 
+    param->check_param();
+    param->print();
     writeField(field, param->nt, tmp_path_efields);
     double *accel_z = nullptr;
     tdsesolver = new TDSESolver(param);
