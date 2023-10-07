@@ -200,13 +200,14 @@ void TDSESolver::_propagate_XYZ(){
     const int ni = _param->ni;
     const int nj = _param->nj;
     const int nk = _param->nk;
+    cdouble norm;
     psi_i_row = alloc2d<cdouble>(_param->n_threads,ni);
     psi_j_row = alloc2d<cdouble>(_param->n_threads,nj);
     psi_k_row = alloc2d<cdouble>(_param->n_threads,nk);
 
+    double tstart, tend;
+    tstart = omp_get_wtime();
     for(int n=0; n<_param->nt;n++){
-        double tstart, tend;
-        tstart = omp_get_wtime();
         #pragma omp parallel for collapse(1) schedule(dynamic)
         for(int j=0;j<nj;j++){
             for(int k=0;k<nk;k++){
@@ -237,9 +238,11 @@ void TDSESolver::_propagate_XYZ(){
             }
         }
         _diag->run_diagnostics(n);
-        tend = omp_get_wtime();
-        std::cout<<"n: "<<n<<"Time step: "<<tend-tstart<<std::endl;
+        //std::cout<<"n: "<<n<<"Time step: "<<tend-tstart<<std::endl;
     }
+    tend = omp_get_wtime();
+    norm = _wf->norm();
+    std::cout<<"Norm: "<<norm<<" Elapsed time: "<< tend-tstart<<std::endl;
     _diag->write_diagnostics();
     free2d(&psi_i_row,_param->n_threads,ni);
     free2d(&psi_j_row,_param->n_threads,nj);

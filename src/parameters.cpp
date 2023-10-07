@@ -47,14 +47,14 @@ Parameters::Parameters(){
         w0Bk        = w0;
         w0Bj        = w0;
         
-        E0i         = 0.067;
+        E0i         = 0.000;
         E0j         = 0.000;
-        E0k         = 0.067;
+        E0k         = 0.000;
         B0i         = 0.0;
         B0j         = 0.0;
-        B0k         = 0.12;
+        B0k         = 0.00;
 
-        phiEi       = 0.5*M_PI;
+        phiEi       = 0.0;
         phiEj       = 0.0;
         phiEk       = 0.0;
         phiBi       = 0.0;
