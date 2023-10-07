@@ -9,10 +9,10 @@ Parameters::Parameters(){
         init_wf	    = GAUS;
 
         // Use potential
-        use_potential = 0;
+        use_potential = 1;
 
         //Geometry
-        geometry    = XZ;            
+        geometry    = XYZ;            
         ni          = 500;
         imin        = -100.0;
         imax        = 100.0;
@@ -52,7 +52,7 @@ Parameters::Parameters(){
         E0k         = 0.000;
         B0i         = 0.0;
         B0j         = 0.0;
-        B0k         = 0.00;
+        B0k         = 0.0;
 
         phiEi       = 0.0;
         phiEj       = 0.0;
