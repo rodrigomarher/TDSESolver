@@ -3,12 +3,12 @@ import numpy as np
 
 w0 = 0.057
 pi = np.pi
-param = {"n_threads": 16,
+param = {"n_threads": 8,
          "init_wf": 1,
          "use_potential": 1,
-         "geometry": 3,
-         "ni": 400,
-         "imin": -100.0,
+         "geometry": 2,
+         "ni": 200,
+         "imin": 0.0,
          "imax": 100.0,
          "nj": 400,
          "jmin": -100.0,
@@ -38,7 +38,7 @@ param = {"n_threads": 16,
          "w0Bk": w0,
          "E0i": 0.000,
          "E0j": 0.000,
-         "E0k": 0.067,
+         "E0k": 0.000,
          "B0i": 0.00,
          "B0j": 0.00,
          "B0k": 0.00,
@@ -49,8 +49,8 @@ param = {"n_threads": 16,
          "phiBj": 0.0*pi,
          "phiBk": 0.0*pi,
          "n_probes": 3,
-         "probe_def": ("acc_i,results/acc_i_r1024_z1024_dx05_dt004_e0067.dat;"
-                       "acc_j,results/acc_j_r1024_z1024_dx05_dt004_e0067.dat;"
-                       "acc_k,results/acc_k_r1024_z1024_dx05_dt004_e0067.dat;"
+         "probe_def": ("acc_i,results/acc_i.dat;"
+                       "acc_j,results/acc_j.dat;"
+                       "acc_k,results/acc_k.dat;"
                        )
         }

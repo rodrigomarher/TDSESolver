@@ -82,6 +82,9 @@ void TDSESolver::setup_wf(){
         case EXPO:
             _wf->exponential(0.0,0.0,0.0,1.0);
             break;
+        case GAUS_ANTI:
+            _wf->gaussian_anti(0.0,0.0,0.0,1.0);
+            break;
     } 
     cdouble norm = _wf->norm();
     double tstart, tend;

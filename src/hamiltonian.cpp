@@ -28,6 +28,8 @@ Hamiltonian::Hamiltonian(Parameters *param){
             _allocate_RZ();
             if(_param->use_potential == 1)
                 _potential = &potential_RZ;
+            if(_param->use_potential == 2)
+                _potential = &potential_argon_RZ;
             break;
         case XYZ:
             _allocate_XYZ();
