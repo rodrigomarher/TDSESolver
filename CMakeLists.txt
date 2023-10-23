@@ -51,6 +51,7 @@ set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -ffast-math -g")
 file(COPY "${CMAKE_SOURCE_DIR}/pytdsesolver" DESTINATION "${CMAKE_BINARY_DIR}")
 file(COPY "${CMAKE_SOURCE_DIR}/launch.py" DESTINATION "${CMAKE_BINARY_DIR}")
 file(COPY "${CMAKE_SOURCE_DIR}/scan.py" DESTINATION "${CMAKE_BINARY_DIR}")
+file(COPY "${CMAKE_SOURCE_DIR}/analyze.py" DESTINATION "${CMAKE_BINARY_DIR}")
 file(COPY "${CMAKE_SOURCE_DIR}/run.sh" DESTINATION "${CMAKE_BINARY_DIR}")
 
 add_executable(tdsesolverapp src/main.cpp)
