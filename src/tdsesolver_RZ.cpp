@@ -135,7 +135,7 @@ void TDSESolver::_ipropagate_RZ(){
 		}
 	    }
 	}
-	    _wf->set_to_eigen(p);
+	    //_wf->set_to_eigen(p);
 	}
 	std::cout<<"Ener: "<<ener<<"\n";
 	free2d(&psi_i_row, _param->n_threads, ni);

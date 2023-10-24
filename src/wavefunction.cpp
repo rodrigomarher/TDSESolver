@@ -44,7 +44,7 @@ void WF::set_geometry( double *i, double *j, double *k, const double di, const d
         }
     }
 
-
+/*
     for(int n=0;n<2;n++){
         for(int i=0;i<_ni;i++){
             for(int j=0;j<_nj;j++){
@@ -55,7 +55,7 @@ void WF::set_geometry( double *i, double *j, double *k, const double di, const d
             }
         }
     }
-
+*/
     _i = i; _j = j; _k = k; _di = di; _dj = dj; _dk = dk;
 
     switch(_param->geometry){
