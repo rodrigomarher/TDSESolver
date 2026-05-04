@@ -22,12 +22,12 @@ void WF::set_geometry( double *i, double *j, double *k, const double di, const d
     _nk = _param->nk;
     
     _wf = alloc3d<cdouble>(_ni, _nj, _nk);
-    if(_param->geometry == XYZ)
+    if(_param->geometry == XYZ || _param->geometry == CUSTOM)
         _wf_buf = alloc4d<cdouble>(_ni, _nj, _nk, 1);
     else
         _wf_buf = alloc4d<cdouble>(_ni, _nj, _nk, _param->nt_diag);
 
-    _eigen_wf = alloc4d<cdouble>(_ni,_nj,_nk,5);
+    _eigen_wf = alloc4d<cdouble>(_ni,_nj,_nk,1);
 
     _i_row = new cdouble[_ni];
     _j_row = new cdouble[_nj];
@@ -44,12 +44,14 @@ void WF::set_geometry( double *i, double *j, double *k, const double di, const d
     }
 
 
-    for(int n=0;n<2;n++){
-        for(int i=0;i<_ni;i++){
-            for(int j=0;j<_nj;j++){
-                for(int k=0;k<_nk;k++){
-                    //std::cout<<i<<" "<<k<<std::endl;
-                    _eigen_wf[n][i][j][k] = 0.0;
+    if(_param->geometry != XYZ && _param->geometry != CUSTOM){
+        for(int n=0;n<2;n++){
+            for(int i=0;i<_ni;i++){
+                for(int j=0;j<_nj;j++){
+                    for(int k=0;k<_nk;k++){
+                        //std::cout<<i<<" "<<k<<std::endl;
+                        _eigen_wf[n][i][j][k] = 0.0;
+                    }
                 }
             }
         }
@@ -70,6 +72,9 @@ void WF::set_geometry( double *i, double *j, double *k, const double di, const d
             break;
         case XYZ:
             _geom_XYZ();
+            break;
+        case CUSTOM:
+            _geom_CUSTOM();
             break;
     }
 }
@@ -107,9 +112,113 @@ void WF::exponential(double i0, double j0, double k0, double sigma){
     }
 }
 
+void WF::cubic_spline(std::string path){
+
+    std::cout<<"Starting cubic spline data loading..."<<std::endl; 
+    int nr_interp = calc_n_elem(path);
+    std::vector<double> rho_interp(nr_interp);
+    std::vector<std::vector<double>> data_cs(4, std::vector<double>(nr_interp));
+    
+    std::ifstream file;
+    std::string line;
+    int idx = 0;
+    file.open(path);
+    if(file.is_open()){
+        while(getline(file, line)){
+            std::stringstream s(line);
+            double rho, c0, c1, c2, c3;
+            std::string tmp;
+            getline(s, tmp, ' ');
+            rho = stod(tmp);
+            getline(s, tmp, ' ');
+            c0 = stod(tmp);
+            getline(s, tmp, ' ');
+            c1 = stod(tmp);
+            getline(s, tmp, ' ');
+            c2 = stod(tmp);
+            getline(s, tmp, ' ');
+            c3 = stod(tmp);
+
+            rho_interp[idx] = rho;
+            data_cs[0][idx] = c0;
+            data_cs[1][idx] = c1;
+            data_cs[2][idx] = c2;
+            data_cs[3][idx] = c3;
+            idx++;
+        }
+    }
+    std::cout<<"Cubic spline data loaded. Number of points: "<<idx<<std::endl; 
+    #pragma omp parallel for schedule(dynamic)
+    for(int i=0; i<_ni; i++){
+        for(int j=0; j<_nj; j++){
+            for(int k=0; k<_nk; k++){
+                 
+                int idx_rho_node;
+                std::vector<double>::iterator iterator_pos;
+                double rho = sqrt(_i[i]*_i[i] + _j[j]*_j[j] + _k[k]*_k[k]);
+                double theta = atan2(sqrt(_i[i]*_i[i] + _j[j]*_j[j]),_k[k]);
+                double phi = atan2(_j[j],_i[i]);
+                double interpolation_result;
+                cdouble radial_component;
+                cdouble angular_component;
+
+                rho = rho>rho_interp[nr_interp-1] ? rho_interp[nr_interp-1] : rho;
+                rho = rho<rho_interp[0] ? rho_interp[0] : rho;
+                iterator_pos = std::lower_bound(rho_interp.begin(), rho_interp.end(), rho);
+                idx_rho_node = iterator_pos - rho_interp.begin() - 1; 
+                
+                double k1 = rho-rho_interp[idx_rho_node];
+                double k2 = pow(rho-rho_interp[idx_rho_node], 2);
+                double k3 = pow(rho-rho_interp[idx_rho_node], 3);
+                interpolation_result = data_cs[3][idx_rho_node] + 
+                                       data_cs[2][idx_rho_node]*k1 + 
+                                       data_cs[1][idx_rho_node]*k2 + 
+                                       data_cs[0][idx_rho_node]*k3;
+                radial_component = cdouble(interpolation_result, 0.0); 
+                angular_component = 0.5*(_spherical_harmonics(theta, phi, 1, -1) - _spherical_harmonics(theta,phi,1,1));
+
+                _wf[i][j][k] = radial_component*angular_component;
+            }
+        }
+    }
+
+}
+
+cdouble  WF::_spherical_harmonics(double theta, double phi, int l, int m){
+    switch(l){
+        case 0:
+            return cdouble(0.5*sqrt(1.0/M_PI),0.0);
+            break;
+
+        case 1:
+            switch(m){
+                case -1:
+                    return 0.5*sqrt(3.0/(2.0*M_PI))*sin(theta)*cdouble(cos(phi), -sin(phi));
+                    break;
+                case 0:
+                    return 0.5*sqrt(3.0/(M_PI))*cos(theta)*cdouble(1.0, 0.0);
+                    break;
+                case 1:
+                    return -0.5*sqrt(3.0/(2.0*M_PI))*sin(theta)*cdouble(cos(phi), sin(phi));
+                    break;
+                default:
+                    debug0("[WF::_spherical_harmonics] m value out of bounds (|m|>l)\n");
+                    exit(1);
+                    break;
+                }
+         break;
+
+         default:
+            debug0("[WF::_spherical_harmonics] l value not implemented\n");
+            exit(1);
+            break;
+    }
+}
 
 cdouble WF::norm(){
     cdouble integral = 0.0;
+    double sum = 0.0;
+    double dr = 0.0;
     switch(_param->geometry){
         case X:
             for(int i=0; i<_ni;i++){
@@ -131,7 +240,6 @@ cdouble WF::norm(){
             }
             break;
         case XYZ:
-            double sum = 0.0;
             //#pragma omp parallel for reduction(+:sum)
             for(int i=0;i<_ni;i++){
                 for(int j=0;j<_nj;j++){
@@ -142,6 +250,17 @@ cdouble WF::norm(){
             }
             integral = sum;
             break;
+        case CUSTOM:
+            for (int i=0; i<_ni-1; i++){
+                for (int j=0; j<_nj-1; j++){
+                    for (int k=0; k<_nk-1; k++){
+                        dr = (_i[i+1] - _i[i])*(_j[j+1] - _j[j])*(_k[k+1] - _k[k]);
+                        sum += (_wf[i][j][k]*conj(_wf[i][j][k])).real()*dr;
+                    }
+                }
+            } 
+            integral = sum;
+            break;  
     }
     return sqrt(integral);
 }
@@ -149,26 +268,29 @@ cdouble WF::norm(){
 cdouble WF::norm_buf(int idx){
     cdouble integral = 0.0;
     switch(_param->geometry){
-        case X:
+        case X:{
             for(int i=0; i<_ni;i++){
                 integral += _wf_buf[idx][i][0][0]*conj(_wf_buf[idx][i][0][0])*_di;
             }
+            }
             break;
-        case XZ:
+        case XZ:{
             for(int i=0; i<_ni;i++){
                 for(int k=0;k<_nk;k++){
                     integral += _wf_buf[idx][i][0][k]*conj(_wf_buf[idx][i][0][k])*_di*_dk;
                 }
             }
+            }
             break;
-        case RZ:
+        case RZ:{
             for(int i=0; i<_ni;i++){
                 for(int k=0;k<_nk;k++){
                     integral += 2*M_PI*_i[i]*_wf_buf[idx][i][0][k]*conj(_wf_buf[idx][i][0][k])*_di*_dk;
                 }
             }
+            }
             break;
-        case XYZ:
+        case XYZ:{
             double sum = 0.0;
             //#pragma omp parallel for reduction(+:sum)
             for(int i=0;i<_ni;i++){
@@ -179,6 +301,21 @@ cdouble WF::norm_buf(int idx){
                 }
             }
             integral = sum;
+            }
+            break;
+        case CUSTOM:{
+            double sum = 0.0;
+            double dr = 0.0;
+            for (int i=0; i<_ni-1; i++){
+                for (int j=0; j<_nj-1; j++){
+                    for (int k=0; k<_nk-1; k++){
+                        dr = (_i[i+1] - _i[i])*(_j[j+1] - _j[j])*(_k[k+1] - _k[k]);
+                        sum += (_wf_buf[idx][i][j][k]*conj(_wf_buf[idx][i][j][k])).real()*dr;
+                    }
+                }
+            } 
+            integral = sum;
+            }
             break;
     }
     return sqrt(integral);
@@ -473,7 +610,7 @@ void WF::operator/=(cdouble val){
 void WF::save_wf2(std::string name){
 
     switch(_param->geometry){
-        case XYZ:
+        case XYZ: case CUSTOM:
             cdouble value;
             std::ofstream outfile_X;
             std::ofstream outfile_Y;

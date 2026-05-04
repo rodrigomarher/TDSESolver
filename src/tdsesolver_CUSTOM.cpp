@@ -1,6 +1,8 @@
 #include <iostream>
 #include <tuple>
 #include <string>
+#include <fstream>
+#include <sstream>
 #include <cstdint>
 #include <cstring>
 #include <omp.h>
@@ -8,16 +10,72 @@
 #include "debug.h"
 #include "utils.h"
 
-void TDSESolver::_geom_XYZ(){
-    std::tie(_i, _di) = linspace<double>(_param->imin, _param->imax, _param->ni);
-    std::tie(_j, _dj) = linspace<double>(_param->jmin, _param->jmax, _param->nj);
-    std::tie(_k, _dk) = linspace<double>(_param->kmin, _param->kmax, _param->nk);
+void TDSESolver::_geom_CUSTOM(){
+    _di = 1.0;
+    _dj = 1.0;
+    _dk = 1.0;
 
-    _propagate = &TDSESolver::_propagate_XYZ;
-    _ipropagate = &TDSESolver::_ipropagate_XYZ;
+    const int ni = calc_n_elem(_param->file_geom_i);
+    if(ni != _param->ni){debug0("[TDSESolver::_geom_CUSTOM] Size of file_geom_i differs from _ni.\n");exit(1);}
+    const int nj = calc_n_elem(_param->file_geom_j);
+    if(nj != _param->nj){debug0("[TDSESolver::_geom_CUSTOM] Size of file_geom_j differs from _nj.\n");exit(1);}
+    const int nk = calc_n_elem(_param->file_geom_k);
+    if(nk != _param->nk){debug0("[TDSESolver::_geom_CUSTOM] Size of file_geom_k differs from _nk.\n");exit(1);}
+    
+    _i = new double[_param->ni];
+    _j = new double[_param->nj];
+    _k = new double[_param->nk];
+
+    std::ifstream file;
+    file.open(_param->file_geom_i);
+    std::string line;
+    int i = 0;
+    if(file.is_open()){
+        while(getline(file, line)){
+            std::stringstream ss(line);
+            ss >> _i[i];
+            i++;
+        }
+        file.close();
+    }
+    else{debug0("[TDSESolver_geom_CUSTOM] Unable to open file. \n"); exit(1);}
+    
+    file.open(_param->file_geom_j);
+    i = 0;
+    if(file.is_open()){
+        while(getline(file, line)){
+            std::stringstream ss(line);
+            ss >> _j[i];
+            i++;
+        }
+        file.close();
+    }
+    else{debug0("[TDSESolver_geom_CUSTOM] Unable to open file. \n"); exit(1);}
+
+    file.open(_param->file_geom_k);
+    i = 0;
+    if(file.is_open()){
+        while(getline(file, line)){
+            std::stringstream ss(line);
+            ss >> _k[i];
+            i++;
+        }
+        file.close();
+    }
+    else{debug0("[TDSESolver_geom_CUSTOM] Unable to open file. \n"); exit(1);}
+
+    _param->imax = _i[_param->ni-1];
+    _param->imin = _i[0];
+    _param->jmax = _j[_param->nj-1];
+    _param->jmin = _j[0];
+    _param->kmax = _k[_param->nk-1];
+    _param->kmin = _k[0];
+  
+    _propagate = &TDSESolver::_propagate_CUSTOM;
+    _ipropagate = &TDSESolver::_ipropagate_CUSTOM;
 }
 
-void TDSESolver::_fields_XYZ(){
+void TDSESolver::_fields_CUSTOM(){
     if (_param->use_field_file == 0){
         Afield_i = new Field_TDSESolver(_param->E0i, _param->w0Ei, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
         Bfield_i = new Field_TDSESolver(_param->B0i, _param->w0Bi, _param->phiEi, _param->env, _param->tmax_ev, _t, _param->nt);
@@ -62,12 +120,11 @@ void TDSESolver::_fields_XYZ(){
     write_array(Bfield_k->get(),_param->nt, path);
 }
 
-void TDSESolver::_masks_XYZ(){
-    double ib = _param->imax/10.0;
-    double jb = _param->jmax/10.0;
-    double kb = _param->kmax/10.0;
-    double gamma = 1.0;
-
+void TDSESolver::_masks_CUSTOM(){
+    double ib = _param->imax/5.0;
+    double jb = _param->jmax/5.0;
+    double kb = _param->kmax/5.0;
+    double gamma = 0.95;
     for(int i=0; i<_param->ni; i++){
         if(_i[i] < _i[0]+ib){
             _imask[i] = pow(cos(M_PI*(_i[i]-(_i[0]+ib))*gamma/(2.0*ib)),1.0/8.0);
@@ -80,6 +137,7 @@ void TDSESolver::_masks_XYZ(){
         else{
             _imask[i] = 1.0;
         }
+
     }
 
     for(int j=0; j<_param->nj; j++){
@@ -111,7 +169,7 @@ void TDSESolver::_masks_XYZ(){
     }
 }
 
-void TDSESolver::_ipropagate_XYZ(){
+void TDSESolver::_ipropagate_CUSTOM(){
     cdouble ener = 0.0;
     cdouble ener_old=0.0;
     double eps=10000.0;
@@ -178,7 +236,7 @@ void TDSESolver::_ipropagate_XYZ(){
             if(counter%5==0){
                 //_wf->grand_schmidt(); 
                 ener = (_ham->*(_ham->ener))(_wf->get());
-	        eps = std::abs((std::real(ener)-std::real(ener_old))/std::real(ener));
+	            eps = std::abs((std::real(ener)-std::real(ener_old))/std::real(ener));
                 std::cout<<"State: "<<m<<" Norm: "<< norm<<" Ener: "<<ener<<" Eps: "<<eps<<"\n";
                 ener_old = ener;
             }
@@ -195,7 +253,7 @@ void TDSESolver::_ipropagate_XYZ(){
     free2d(&psi_k_row,_param->n_threads,nk);
 }
 
-void TDSESolver::_propagate_XYZ(){
+void TDSESolver::_propagate_CUSTOM(){
     cdouble ener = 0.0;
     cdouble ener_old=0.0;
     double eps=0.0;
@@ -213,6 +271,8 @@ void TDSESolver::_propagate_XYZ(){
     ener = (_ham->*(_ham->ener))(_wf->get());
     std::cout<<"Initial energy:  "<<ener<<std::endl;
     for(int n=0; n<_param->nt;n++){
+        //norm = _wf->norm();
+        //std::cout<<"norm: "<<norm<<std::endl;
         #pragma omp parallel for collapse(1) schedule(dynamic)
         for(int j=0;j<nj;j++){
             for(int k=0;k<nk;k++){
@@ -223,6 +283,9 @@ void TDSESolver::_propagate_XYZ(){
             }
         }
 
+        //ener = (_ham->*(_ham->ener))(_wf->get());
+        //norm = _wf->norm();
+        //std::cout<<"After x – norm: "<<norm<<" ener: "<<ener<<std::endl;
         #pragma omp parallel for collapse(1) schedule(dynamic)
         for(int i=0;i<ni;i++){
             for(int k=0;k<nk;k++){
@@ -233,6 +296,9 @@ void TDSESolver::_propagate_XYZ(){
             }
         }
 
+        //ener = (_ham->*(_ham->ener))(_wf->get());
+        //norm = _wf->norm();
+        //std::cout<<"After y – norm: "<<norm<<" ener: "<<ener<<std::endl;
         #pragma omp parallel for collapse(1) schedule(dynamic)
         for(int i=0;i<ni;i++){
             for(int j=0;j<nj;j++){
@@ -242,7 +308,12 @@ void TDSESolver::_propagate_XYZ(){
                 _wf->set_k_row_mask(psi_k_row[id],_kmask,i,j);
             }
         }
-        if(n%100==0){
+
+        //ener = (_ham->*(_ham->ener))(_wf->get());
+        //norm = _wf->norm();
+        //std::cout<<"After z – norm: "<<norm<<" ener: "<<ener<<std::endl;
+        //_diag->run_diagnostics(n);
+        if(n%1==0){
             //_wf->grand_schmidt(); 
             norm = _wf->norm();
             ener = (_ham->*(_ham->ener))(_wf->get());
@@ -250,13 +321,11 @@ void TDSESolver::_propagate_XYZ(){
             std::cout<<"n: "<<n<<" Norm: "<< norm<<" Ener: "<<ener<<" Eps: "<<eps<<std::endl;
             ener_old = ener;
         }
-        _diag->run_diagnostics(n);
-        //std::cout<<"n: "<<n<<"Time step: "<<tend-tstart<<std::endl;
     }
     tend = omp_get_wtime();
     norm = _wf->norm();
     std::cout<<"Norm: "<<norm<<" Elapsed time: "<< tend-tstart<<std::endl;
-    _diag->write_diagnostics();
+    //_diag->write_diagnostics();
     free2d(&psi_i_row,_param->n_threads,ni);
     free2d(&psi_j_row,_param->n_threads,nj);
     free2d(&psi_k_row,_param->n_threads,nk);

@@ -1,7 +1,8 @@
 import ctypes as ct
 import sys
 
-path = 'lib/libtdsesolver.so'
+#path = 'lib/libtdsesolver.so'
+path = 'build/libtdsesolver.so'
 
 lib = ct.cdll.LoadLibrary(path)
 
@@ -60,6 +61,16 @@ class Parameters:
         lib.Parameters_kmin.restype = ct.c_void_p
         lib.Parameters_kmax.argtypes = [ct.c_void_p, ct.c_double]
         lib.Parameters_kmax.restype = ct.c_void_p
+        lib.Parameters_file_geom_i.argtypes = [ct.c_void_p, ct.c_char_p]
+        lib.Parameters_file_geom_i.restype  = ct.c_void_p
+        lib.Parameters_file_geom_j.argtypes = [ct.c_void_p, ct.c_char_p]
+        lib.Parameters_file_geom_j.restype  = ct.c_void_p
+        lib.Parameters_file_geom_k.argtypes = [ct.c_void_p, ct.c_char_p]
+        lib.Parameters_file_geom_k.restype  = ct.c_void_p
+        lib.Parameters_use_external_wf.argtypes = [ct.c_void_p, ct.c_int]
+        lib.Parameters_use_external_wf.restype = ct.c_void_p
+        lib.Parameters_file_wf_cs.argtypes = [ct.c_void_p, ct.c_char_p]
+        lib.Parameters_file_wf_cs.restype = ct.c_void_p
         lib.Parameters_w0.argtypes = [ct.c_void_p, ct.c_double]
         lib.Parameters_w0.restype = ct.c_void_p
         lib.Parameters_period.argtypes = [ct.c_void_p, ct.c_double]
@@ -152,6 +163,11 @@ class Parameters:
         self.nk(param["nk"])
         self.kmin(param["kmin"])
         self.kmax(param["kmax"])
+        self.file_geom_i(param["file_geom_i"])
+        self.file_geom_j(param["file_geom_j"])
+        self.file_geom_k(param["file_geom_k"])
+        self.use_external_wf(param["use_external_wf"])
+        self.file_wf_cs(param["file_wf_cs"])
         self.w0(param["w0"])
         self.period(param["period"])
         self.tmax_ev(param["tmax_ev"])
@@ -215,6 +231,16 @@ class Parameters:
         lib.Parameters_kmin(self._obj, val)
     def kmax(self, val):
         lib.Parameters_kmax(self._obj, val)
+    def file_geom_i(self, val):
+        lib.Parameters_file_geom_i(self._obj, val.encode('utf-8'))
+    def file_geom_j(self, val):
+        lib.Parameters_file_geom_j(self._obj, val.encode('utf-8'))
+    def file_geom_k(self, val):
+        lib.Parameters_file_geom_k(self._obj, val.encode('utf-8'))
+    def use_external_wf(self, val):
+        lib.Parameters_use_external_wf(self._obj, val)
+    def file_wf_cs(self, val):
+        lib.Parameters_file_wf_cs(self._obj, val.encode('utf-8'))
     def w0(self, val):
         lib.Parameters_w0(self._obj, val)
     def period(self, val):
@@ -286,5 +312,5 @@ class Parameters:
     def probe_def(self, val):
         lib.Parameters_probe_def(self._obj, val.encode("utf-8"))
     def path_results(self, val):
-        lib.Parameters_path_results(self._obj, val.enconde("utf-8"))
+        lib.Parameters_path_results(self._obj, val.encode("utf-8"))
 

@@ -36,6 +36,7 @@ class Hamiltonian{
         void _allocate_XZ();
         void _allocate_RZ();
         void _allocate_XYZ();
+        void _allocate_CUSTOM();
 
         void tridot(cdouble* aa, cdouble *bb, cdouble* cc, cdouble* vec, cdouble* out, const int n);
         void tdma(cdouble* aa, cdouble *bb, cdouble* cc, cdouble* dd, cdouble* out,  const int n);
@@ -84,6 +85,12 @@ class Hamiltonian{
         void step_j_XYZ(cdouble *psi, const int i, const int k, const int ti, const int imag, const int id_thread);
         void step_k_XYZ(cdouble *psi, const int i, const int j, const int ti, const int imag, const int id_thread);
         cdouble ener_XYZ(cdouble*** psi);
+
+        // Hamiltonian for CUSTOM
+        void step_i_CUSTOM(cdouble *psi, const int j, const int k, const int ti, const int imag, const int id_thread);
+        void step_j_CUSTOM(cdouble *psi, const int i, const int k, const int ti, const int imag, const int id_thread);
+        void step_k_CUSTOM(cdouble *psi, const int i, const int j, const int ti, const int imag, const int id_thread);
+        cdouble ener_CUSTOM(cdouble*** psi);
 
         ~Hamiltonian();        
 };

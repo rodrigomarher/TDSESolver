@@ -8,6 +8,7 @@
 #define XZ   1
 #define RZ   2
 #define XYZ  3
+#define CUSTOM  4
 
 #define SIN2 0
 #define TRAP 1
@@ -15,6 +16,7 @@
 #define GAUS 0
 #define EXPO 1
 #define GAUS_ANTI 2
+#define CUBIC_SPLINE 3
 
 #define USER_DEFINED 0
 #define HYDROGEN 1
@@ -28,60 +30,69 @@
 	    int n_threads;
 	    int init_wf;	 
         int use_potential;
-            int geometry;           
-            int ni;  
-            double imin;
-            double imax;     
-            int nj;
-            double jmin;
-            double jmax;
-            int nk;         
-            double kmin;     
-            double kmax;     
-            double w0;       
-            double period;   
-            double tmax_ev;  
-            double tmax_sim; 
-            double dt;       
-            double dt_ITP;   
-            int nt;          
-            int nt_ITP;      
-            int nt_diag ;    
-            int use_field_file;
-            std::string file_fieldx;
-            std::string file_fieldy;
-            std::string file_fieldz;
-            int env;         
-            double w0Ei;     
-            double w0Ek;    
-            double w0Ej;
-            double w0Bi;     
-            double w0Bk;
-            double w0Bj;     
-            double E0i;      
-            double E0k;
-            double E0j;      
-            double B0i;      
-            double B0k;
-            double B0j;      
-            double phiEi;    
-            double phiEk;
-            double phiEj;    
-            double phiBi;    
-            double phiBk;
-            double phiBj;
-            int n_probes;
-            std::string probe_def;
-            std::string path_results;
-            Parameters();
+        int geometry;           
+        int ni;  
+        double imin;
+        double imax;     
+        int nj;
+        double jmin;
+        double jmax;
+        int nk;         
+        double kmin;     
+        double kmax;     
+        std::string file_geom_i;
+        std::string file_geom_j;
+        std::string file_geom_k;
+        int use_external_wf;
+        std::string file_wf_cs;
+        double w0;       
+        double period;   
+        double tmax_ev;  
+        double tmax_sim; 
+        double dt;       
+        double dt_ITP;   
+        int nt;          
+        int nt_ITP;      
+        int nt_diag ;    
+        int use_field_file;
+        std::string file_fieldx;
+        std::string file_fieldy;
+        std::string file_fieldz;
+        int env;         
+        double w0Ei;     
+        double w0Ek;    
+        double w0Ej;
+        double w0Bi;     
+        double w0Bk;
+        double w0Bj;     
+        double E0i;      
+        double E0k;
+        double E0j;      
+        double B0i;      
+        double B0k;
+        double B0j;      
+        double phiEi;    
+        double phiEk;
+        double phiEj;    
+        double phiBi;    
+        double phiBk;
+        double phiBj;
+        int n_probes;
+        std::string probe_def;
+        std::string path_results;
+        Parameters();
 
-            void check_param();	
-            void print();
-            void set_probe_def(char *val);
-            void set_path_fieldx(char *val);
-            void set_path_fieldy(char *val);
-            void set_path_fieldz(char *val);
-            void set_path_results(char *val);
+        void check_param();	
+        void print();
+        void set_probe_def(char *val);
+        void set_path_file_geom_i(char *val);
+        void set_path_file_geom_j(char *val);
+        void set_path_file_geom_k(char *val);
+        void set_path_file_wf_cs(char* val);
+        void set_path_fieldx(char *val);
+        void set_path_fieldy(char *val);
+        void set_path_fieldz(char *val);
+        void set_path_results(char *val);
     };
 
 #endif

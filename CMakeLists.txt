@@ -4,6 +4,7 @@ find_package(OpenMP REQUIRED)
 
 set(tdsesolver_SOURCES
     # C++
+    src/cwrapper.cpp
     src/diagnostics.cpp
     src/fields.cpp
     src/hamiltonian.cpp
@@ -11,6 +12,7 @@ set(tdsesolver_SOURCES
     src/hamiltonian_XZ.cpp
     src/hamiltonian_RZ.cpp
     src/hamiltonian_XYZ.cpp
+    src/hamiltonian_CUSTOM.cpp
     src/parameters.cpp
     src/potential.cpp
     src/probe.cpp
@@ -19,17 +21,20 @@ set(tdsesolver_SOURCES
     src/probe.XZ.cpp
     src/probe.RZ.cpp
     src/probe.XYZ.cpp
+    src/probe.CUSTOM.cpp
     src/tdsesolver.cpp
     src/tdsesolver_X.cpp
     src/tdsesolver_XZ.cpp
     src/tdsesolver_RZ.cpp
     src/tdsesolver_XYZ.cpp
+    src/tdsesolver_CUSTOM.cpp
     src/utils.cpp
     src/wavefunction.cpp
     src/wavefunction_X.cpp
     src/wavefunction_XZ.cpp
     src/wavefunction_RZ.cpp
     src/wavefunction_XYZ.cpp
+    src/wavefunction_CUSTOM.cpp
 )
 
 if (TARGET propag-plugins)
@@ -38,7 +43,7 @@ if (TARGET propag-plugins)
     target_link_libraries(tdsesolver PUBLIC propag)
     add_dependencies(tdsesolver propag)
 else()
-    add_library(tdsesolver ${tdsesolver_SOURCES})
+    add_library(tdsesolver SHARED ${tdsesolver_SOURCES})
 endif()
 target_include_directories(tdsesolver PUBLIC ${CMAKE_CURRENT_BINARY_DIR} include)
 target_compile_features(tdsesolver PRIVATE cxx_std_17)

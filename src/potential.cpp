@@ -33,7 +33,7 @@ cdouble potential_XYZ( double i, double j, double k, double ti, Hamiltonian *ham
 cdouble potential_argon_XYZ (double i, double j, double k, double ti, Hamiltonian *ham){
     // doi: 10.1088/2399-6528/ab9a68
     double r  = sqrt(i*i + j*j + k*k);
-    double r_inv = 1.0/r;
+    double r_inv = 1.0/(r+1.0*3.5E-2);
     //const double c  =   0.8103;
     //const double c0 =   1.0000;  const double zc =  17.0000;
     //const double a1 = -15.9583;  const double b1 =   1.2305;

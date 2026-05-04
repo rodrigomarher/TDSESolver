@@ -45,19 +45,24 @@
             void _ipropagate_RZ();
             void _propagate_XYZ();
             void _ipropagate_XYZ();
+            void _propagate_CUSTOM();
+            void _ipropagate_CUSTOM();
 
             void _geom_X();
             void _geom_XZ();
             void _geom_RZ();
             void _geom_XYZ();
+            void _geom_CUSTOM();
             void _fields_X();
             void _fields_XZ();
             void _fields_RZ();
             void _fields_XYZ();
+            void _fields_CUSTOM();
             void _masks_X();
             void _masks_XZ();
             void _masks_RZ();
             void _masks_XYZ();
+            void _masks_CUSTOM();
         public:
             TDSESolver();
             TDSESolver(Parameters *param);

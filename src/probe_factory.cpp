@@ -4,6 +4,7 @@
 #include "probe.XZ.h"
 #include "probe.RZ.h"
 #include "probe.XYZ.h"
+#include "probe.CUSTOM.h"
 
 Probe* ProbeFactory::create(int geometry, std::string def){
     switch(geometry){
@@ -22,5 +23,8 @@ Probe* ProbeFactory::create(int geometry, std::string def){
             std::cout<<"Probe XYZ\n";
             return new ProbeXYZ(def);
             break;
+        case CUSTOM:
+            std::cout<<"Probe CUSTOM\n";
+            return new ProbeCUSTOM(def);
     }
 }

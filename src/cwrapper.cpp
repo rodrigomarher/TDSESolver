@@ -22,6 +22,11 @@ extern "C"{
     void Parameters_nk(Parameters *p, int val){p->nk = val;}
     void Parameters_kmin(Parameters *p, double val){p->kmin = val;}
     void Parameters_kmax(Parameters *p, double val){p->kmax = val;}
+    void Parameters_file_geom_i(Parameters *p, char *val){p->set_path_file_geom_i(val);}
+    void Parameters_file_geom_j(Parameters *p, char *val){p->set_path_file_geom_j(val);}
+    void Parameters_file_geom_k(Parameters *p, char *val){p->set_path_file_geom_k(val);}
+    void Parameters_use_external_wf(Parameters *p, int val){p->use_external_wf = val;}
+    void Parameters_file_wf_cs(Parameters *p, char *val){p->set_path_file_wf_cs(val);}
     void Parameters_w0(Parameters *p, double val){p->w0 = val;}
     void Parameters_period(Parameters *p, double val){p->period = val;}
     void Parameters_tmax_ev(Parameters *p, double val){p->tmax_ev = val;}

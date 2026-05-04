@@ -19,9 +19,10 @@ TDSESolver::TDSESolver(Parameters *param){
     omp_set_num_threads(_param->n_threads);
     setup_geometry();
     setup_fields();
-    setup_ham();
     setup_wf();
     setup_masks();
+	_wf->save_wf2(std::string("argon_ground"));
+    setup_ham();
     setup_diagnostics();
     }
 
@@ -47,9 +48,13 @@ void TDSESolver::setup_geometry(){
         case XYZ:
             _geom_XYZ();
             break;
+        case CUSTOM:
+            _geom_CUSTOM();
     }
     path = _param->path_results + "/i.dat";
     write_array(_i,_param->ni,path);
+    path = _param->path_results + "/j.dat";
+    write_array(_j,_param->nj,path);
     path = _param->path_results + "/k.dat";
     write_array(_k,_param->nk,path);
 }
@@ -59,15 +64,15 @@ void TDSESolver::setup_fields(){
         case X:
             _fields_X();
             break;
-
         case XZ:
             _fields_XZ();
             break;
-
         case RZ:
             _fields_RZ();
             break;
         case XYZ:
+            _fields_XYZ();
+        case CUSTOM:
             _fields_XYZ();
     }
 }
@@ -82,6 +87,10 @@ void TDSESolver::setup_wf(){
         case EXPO:
             _wf->exponential(0.0,0.0,0.0,1.0);
             break;
+        case CUBIC_SPLINE:
+            _wf->cubic_spline(_param->file_wf_cs);
+            break;
+            
     } 
     cdouble norm = _wf->norm();
     double tstart, tend;
@@ -120,8 +129,17 @@ void TDSESolver::setup_masks(){
         case XYZ:
             _masks_XYZ();
             break;
+        case CUSTOM:
+            _masks_CUSTOM();
+            break;
     }
 
+    path = _param->path_results + "/imask.dat";
+    write_array(_imask,_param->ni,path);
+    path = _param->path_results + "/jmask.dat";
+    write_array(_jmask,_param->nj,path);
+    path = _param->path_results + "/kmask.dat";
+    write_array(_kmask,_param->nk,path);
 }
 
 void TDSESolver::setup_diagnostics(){
@@ -142,6 +160,7 @@ void TDSESolver::ipropagate(){
 
 void TDSESolver::propagate(){
     (this->*(this->_propagate))();
+	_wf->save_wf2(std::string("argon_after_prop"));
 }
 
 TDSESolver::~TDSESolver(){

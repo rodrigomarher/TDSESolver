@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "hamiltonian.h"
 #include "potential.h"
 
@@ -35,6 +36,15 @@ Hamiltonian::Hamiltonian(Parameters *param){
                 _potential = &potential_XYZ;
             if(_param->use_potential == 2)
                 _potential = &potential_argon_XYZ;
+            break;
+        case CUSTOM:
+            _allocate_CUSTOM();
+            if(_param->use_potential == 1)
+                _potential = &potential_XYZ;
+            if(_param->use_potential == 2)
+                _potential = &potential_argon_XYZ;
+            break;
+
     }    
     if(_param->use_potential == 0 )
             _potential = &potential;
@@ -60,15 +70,45 @@ cdouble Hamiltonian::_potential_fn(double i, double j, double k, double t){
 }
 
 cdouble Hamiltonian::dpotential_i(double i, double j, double k){
-    return (_potential_fn(i + _di,j,k,0) - _potential_fn(i - _di,j,k,0))/(2.0*_di);
+    return (_potential_fn(i+_di,j,k, 0) - _potential_fn(i-_di,j,k,0))/(2.0*_di);
+    //std::vector<double> _ii(_i, _i + sizeof _i/sizeof _i[0]);
+    //std::vector<double>::iterator it_i;
+    //int idx_i;
+    //it_i = std::lower_bound(_ii.begin(), _ii.end(), i);
+    //idx_i = it_i - _ii.begin() - 1;
+    //if(idx_i<1)
+    //    return (_potential_fn(_ii[1],j,k, 0) - _potential_fn(_ii[0],j,k,0))/(_ii[1]-_ii[0]);
+    //if(idx_i>_ni-2)
+    //    return (_potential_fn(_ii[_ni-1],j,k, 0) - _potential_fn(_ii[_ni-2],j,k,0))/(_ii[_ni-1]-_ii[_ni-2]);
+    //return (_potential_fn(_ii[idx_i+1],j,k, 0) - _potential_fn(_ii[idx_i-1],j,k,0))/(_ii[idx_i+1]-_ii[idx_i-1]);
 }
 
 cdouble Hamiltonian::dpotential_j(double i, double j, double k){
-    return (_potential_fn(i,j+_dj,k,0) - _potential_fn(i,j-_dj, k,0))/(2.0*_dj);
+    return (_potential_fn(i,j+_dj,k, 0) - _potential_fn(i,j-_dj,k,0))/(2.0*_dj);
+    //std::vector<double> _jj(_j, _j + sizeof _j/sizeof _j[0]);
+    //std::vector<double>::iterator it_j;
+    //int idx_j;
+    //it_j = std::lower_bound(_jj.begin(), _jj.end(), j);
+    //idx_j = it_j - _jj.begin() - 1;
+    //if(idx_j<1)
+    //    return (_potential_fn(i,_jj[1],k, 0) - _potential_fn(i,_jj[0],k,0))/(_jj[1]-_jj[0]);
+    //if(idx_j>_nj-2)
+    //    return (_potential_fn(i,_jj[_nj-1],k, 0) - _potential_fn(i,_jj[_nj-2],k,0))/(_jj[_nj,1]-_jj[_nj-2]);
+    //return (_potential_fn(i,_jj[idx_j+1],k,0) - _potential_fn(i,_jj[idx_j-1],k,0))/(_jj[idx_j+1]-_jj[idx_j-1]);
 }
 
 cdouble Hamiltonian::dpotential_k(double i, double j, double k){
-    return (_potential_fn(i,j,k + _dk,0) - _potential_fn(i,j,k - _dk,0))/(2.0*_dk);
+    return (_potential_fn(i,j,k+_dk, 0) - _potential_fn(i,j,k-_dk,0))/(2.0*_dk);
+    //std::vector<double> _kk(_k, _k + sizeof _k/sizeof _k[0]);
+    //std::vector<double>::iterator it_k;
+    //int idx_k;
+    //it_k = std::lower_bound(_kk.begin(), _kk.end(), k);
+    //idx_k = it_k - _kk.begin() - 1;
+    //if(idx_k<1)
+    //    return (_potential_fn(i,j,_kk[1], 0) - _potential_fn(i,j,_kk[0],0))/(_kk[1]-_kk[0]);
+    //if(idx_k>_nk-2)
+    //    return (_potential_fn(i,j,_kk[_nk-1], 0) - _potential_fn(i,j,_kk[_nk-2],0))/(_kk[_nk-1]-_kk[_nk-2]);
+    //return (_potential_fn(i,j,_kk[idx_k+1],0) - _potential_fn(i,j,_kk[idx_k-1],0))/(_kk[idx_k+1]-_kk[idx_k-1]);
 }
 
 void Hamiltonian::tridot(cdouble* aa, cdouble *bb, cdouble* cc, cdouble* vec, cdouble* out, const int n){

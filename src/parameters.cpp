@@ -22,6 +22,11 @@ Parameters::Parameters(){
         nj          = 500;
         jmin        = -100.0;
         jmax        = 100.0;
+        file_geom_i = "";
+        file_geom_j = "";
+        file_geom_k = "";
+        use_external_wf = 0;
+        file_wf_cs  = ""; 
 
         // Time
         w0          = 0.057;
@@ -39,7 +44,7 @@ Parameters::Parameters(){
         file_fieldx = "";
         file_fieldy = "";
         file_fieldz = "";
-        env         = SIN2;
+        env         = TRAP;
         w0Ei        = w0;
         w0Ej        = w0;
         w0Ek        = w0;
@@ -98,6 +103,22 @@ void Parameters::set_probe_def(char *val){
     probe_def = std::string(val);
 }
 
+void Parameters::set_path_file_geom_i(char *val){
+    file_geom_i = std::string(val);
+}
+
+void Parameters::set_path_file_geom_j(char *val){
+    file_geom_j = std::string(val);
+}
+
+void Parameters::set_path_file_geom_k(char *val){
+    file_geom_k = std::string(val);
+}
+
+void Parameters::set_path_file_wf_cs(char *val){
+    file_wf_cs = std::string(val);
+}
+
 void Parameters::set_path_fieldx(char *val){
     file_fieldx = std::string(val);
 }
@@ -129,6 +150,15 @@ void Parameters::print(){
     std::cout<<"\tnk: "<<nk<<std::endl;
     std::cout<<"\tkmin: "<<kmin<<std::endl;
     std::cout<<"\tkmax: "<<kmax<<std::endl;
+    if(geometry==CUSTOM){
+        std::cout<<"\tfile_geom_i: "<<file_geom_i<<std::endl;
+        std::cout<<"\tfile_geom_j: "<<file_geom_j<<std::endl;
+        std::cout<<"\tfile_geom_k: "<<file_geom_k<<std::endl;
+    }
+    std::cout<<"\tuse_external_wf: "<<use_external_wf<<std::endl;
+    if(use_external_wf){
+        std::cout<<"\tfile_wf_cs: "<<file_wf_cs<<std::endl;
+    }
     std::cout<<"\tw0: "<<w0<<std::endl;
     std::cout<<"\tperiod: "<<period<<std::endl;
     std::cout<<"\ttmax_ev: "<<tmax_ev<<std::endl;
