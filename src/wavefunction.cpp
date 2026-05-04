@@ -56,7 +56,6 @@ void WF::set_geometry( double *i, double *j, double *k, const double di, const d
             }
         }
     }
-
     _i = i; _j = j; _k = k; _di = di; _dj = dj; _dk = dk;
 
     switch(_param->geometry){
@@ -577,12 +576,12 @@ cdouble WF::project(cdouble ***phi){
 
 void WF::grand_schmidt(){
     std::vector<cdouble> proj;
-    for(int i=0;i<2;i++){
+    for(int i=0;i<5;i++){
         proj.push_back(project(_eigen_wf[i]));
     }
 
 
-    std::cout<<"Projection: "<<proj[0]<<" "<<proj[1]<<std::endl;
+    std::cout<<"Projection: "<<proj[0]<<" "<<proj[1]<<" "<<proj[2]<<" "<<proj[3]<<" "<<proj[4]<<std::endl;
     for (int i=0; i<_ni; i++){
         for (int j=0; j<_nj; j++){
             for (int k=0; k<_nk; k++){

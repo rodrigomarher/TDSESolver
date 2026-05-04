@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.13.5)
 
+project(TDSESolver)
+
 find_package(OpenMP REQUIRED)
 
 set(tdsesolver_SOURCES
@@ -50,7 +52,11 @@ target_compile_features(tdsesolver PRIVATE cxx_std_17)
 target_link_libraries(tdsesolver PUBLIC OpenMP::OpenMP_CXX)
 set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -ffast-math")
 #target_link_libraries(tdsesolver PUBLIC propag)
-
+file(COPY "${CMAKE_SOURCE_DIR}/pytdsesolver" DESTINATION "${CMAKE_BINARY_DIR}")
+file(COPY "${CMAKE_SOURCE_DIR}/launch.py" DESTINATION "${CMAKE_BINARY_DIR}")
+file(COPY "${CMAKE_SOURCE_DIR}/scan.py" DESTINATION "${CMAKE_BINARY_DIR}")
+file(COPY "${CMAKE_SOURCE_DIR}/analyze.py" DESTINATION "${CMAKE_BINARY_DIR}")
+file(COPY "${CMAKE_SOURCE_DIR}/run.sh" DESTINATION "${CMAKE_BINARY_DIR}")
 
 add_executable(tdsesolverapp src/main.cpp)
 set_target_properties(tdsesolverapp PROPERTIES LINKER_LANGUAGE CXX)

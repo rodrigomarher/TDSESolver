@@ -90,7 +90,9 @@ void TDSESolver::setup_wf(){
         case CUBIC_SPLINE:
             _wf->cubic_spline(_param->file_wf_cs);
             break;
-            
+        case GAUS_ANTI:
+            _wf->gaussian_anti(0.0,0.0,0.0,1.0);
+            break;
     } 
     cdouble norm = _wf->norm();
     double tstart, tend;
